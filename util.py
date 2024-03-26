@@ -1,8 +1,11 @@
-def add_task(current_tasks:list, task_name:str) -> None:
-    current_tasks.append(task_name)
+import GlobalVariables
+import Task
+
+def add_task(task_name:str, task_description:str="") -> None:
+    GlobalVariables.user_tasks.append(Task())
 
 def edit_task(task_name:str) -> None:
     pass
 
-def delete_task(current_tasks:list, task_name:str) -> str:
-    return current_tasks.remove(task_name)
+def delete_task(task_name:str) -> str:
+    return GlobalVariables.user_tasks.remove(task_name)

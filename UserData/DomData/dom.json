@@ -1,5 +1,15 @@
 {
     "dom":{
-        
-    }
+        "username" : "DomC18",
+        "password" : "fortnite"
+    },
+    "tasks":[
+        {
+            "name" : "Task1",
+            "description" : "finish project",
+            "date added" : "03/26/24",
+            "date to complete by" : "03/28/24",
+            "priority key" : 1
+        }
+    ]
 }
