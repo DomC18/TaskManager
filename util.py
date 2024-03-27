@@ -1,11 +1,11 @@
-import GlobalVariables
-import Task
+from task import Task
+import globalvariables as globalvariables
 
 def add_task(task_name:str, task_description:str="") -> None:
-    GlobalVariables.user_tasks.append(Task())
+    globalvariables.user_tasks.append(Task(task_name, task_description))
 
 def edit_task(task_name:str) -> None:
     pass
 
 def delete_task(task_name:str) -> str:
-    return GlobalVariables.user_tasks.remove(task_name)
+    return globalvariables.user_tasks.remove(task_name)
