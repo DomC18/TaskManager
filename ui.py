@@ -1,5 +1,7 @@
 import tkinter as tk
+import globalvar
 import constants
+import taskutil
 import json
 
 def verify_existing(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, root:tk.Tk) -> None:
@@ -16,9 +18,14 @@ def verify_existing(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk
     username = data[name]["username"]
     password = data[name]["password"]
 
+    globalvar.name = name
+    globalvar.username = username
+    globalvar.password = password
+
     if username == user_entry.get() and password == password_entry.get():
         print("Login Successful")
         root.destroy()
+        init_task_interface()
 
 
 def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, root:tk.Tk) -> None:
@@ -39,25 +46,29 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
 
     data = {
         name: {
-            "username":username,
-            "password":password
+            "username": username,
+            "password": password
         }
     }
+
+    globalvar.name = name
+    globalvar.username = username
+    globalvar.password = password
 
     with open(file_dir, "w") as file:
         json.dump(data, file, indent=4)
 
     print("Account created successfully.")
-
     root.destroy()
+    init_task_interface()
 
 
 
 
 
-def init_login_interface() -> None:
+def init() -> None:
     root = tk.Tk()
-    root.config(bg="white")
+    root.config(bg="grey")
     root.geometry("560x480+480+270")
     root.resizable(False, False)
 
@@ -92,11 +103,10 @@ def init_login_interface() -> None:
 
 def init_task_interface() -> None:
     root = tk.Tk()
-    root.config(bg="red")
-    root.geometry("960x540+480+270")
+    root.config(bg="grey")
+    root.geometry("960x540+333+135")
     root.resizable(False, False)
 
-    widget = tk.Button(root, text="hello")
-    widget.place(relx=0.5, rely=0.5)
+    
     
     root.mainloop()

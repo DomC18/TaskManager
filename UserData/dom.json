@@ -1,15 +1,22 @@
 {
-    "dom":{
-        "username" : "DomC18",
-        "password" : "fortnite"
+    "dom": {
+        "username": "DomC18",
+        "password": "fortnite"
     },
-    "tasks":[
+    "tasks": [
         {
-            "name" : "Task1",
-            "description" : "finish project",
-            "date added" : "03/26/24",
-            "date to complete by" : "03/28/24",
-            "priority key" : 1
+            "name": "hi",
+            "description": "short task",
+            "deadline": "tomorrow",
+            "status": 2,
+            "importance": 3
+        },
+        {
+            "name": "no",
+            "description": "too much",
+            "deadline": "woah",
+            "status": 1,
+            "importance": 1
         }
     ]
 }

@@ -6,7 +6,7 @@ class Task:
 
     name:str
     description:str
-    date_to_finish:str
+    deadline:str
     status:int
     importance:int
     
@@ -29,25 +29,25 @@ class Task:
         4: "Very High Importance"
     }
     
-    def __init__(self, name:str="", description:str="", date_to_finish:str="", status:int=0, importance:int=0) -> None:
+    def __init__(self, name:str="", description:str="", deadline:str="", status:int=0, importance:int=0) -> None:
         self.name = name
         self.description = description
         self.date_added = self.get_current_date()
         self.time_added = self.get_current_time()
-        self.date_to_finish = date_to_finish
+        self.deadline = deadline
         self.status = status
         self.importance = importance
         
-        self.elements = [self.name, self.description, self.date_to_finish, self.status, self.importance]
+        self.elements = [self.name, self.description, self.deadline, self.status, self.importance]
 
     def get_current_date(self) -> str:
         localtime = time.localtime()
-        list_of_date = [localtime[1], localtime[2], localtime[0]]
+        list_of_date = [str(localtime[1]), str(localtime[2]), str(localtime[0])]
         return "".join(list_of_date)
 
     def get_current_time(self) -> str:
         localtime = time.localtime()
-        list_of_times = [localtime[3], localtime[4], localtime[5]]
+        list_of_times = [str(localtime[3]), str(localtime[4]), str(localtime[5])]
         return "".join(list_of_times)
 
     def get_status(self) -> str:
@@ -62,8 +62,8 @@ class Task:
     def change_description(self, new_description:str) -> None:
         self.description = new_description
 
-    def change_date_to_finish(self, new_date_to_finish:str) -> None:
-        self.date_to_finish = new_date_to_finish
+    def change_date_to_finish(self, new_deadline:str) -> None:
+        self.deadline = new_deadline
 
     def change_importance(self, new_importance:int) -> None:
         self.importance = new_importance
@@ -72,7 +72,16 @@ class Task:
         return self.elements == other.elements
 
     def __repr__(self) -> str:
-        return f"Name: {self.name}, Description: {self.description}, Date to Finish: {self.date_to_finish}, Status: {self.status}, Importance: {self.importance}"
+        return "{Name: " + self.name + ", Description: " + self.description + ", Date to Finish: " + self.deadline + ", Status: " + str(self.status) + ", Importance: " + str(self.importance) + "}"
     
     def __str__(self) -> str:
-        return f"Name: {self.name}, Description: {self.description}, Date to Finish: {self.date_to_finish}, Status: {self.status}, Importance: {self.importance}"
+        return "{Name: " + self.name + ", Description: " + self.description + ", Date to Finish: " + self.deadline + ", Status: " + str(self.status) + ", Importance: " + str(self.importance) + "}"
+    
+    def return_as_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "deadline": self.deadline,
+            "status": self.status,
+            "importance": self.importance
+        }
