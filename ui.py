@@ -25,6 +25,7 @@ def verify_existing(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk
     if username == user_entry.get() and password == password_entry.get():
         print("Login Successful")
         root.destroy()
+        taskutil.load_tasks()
         init_task_interface()
 
 
@@ -103,10 +104,32 @@ def init() -> None:
 
 def init_task_interface() -> None:
     root = tk.Tk()
-    root.config(bg="grey")
+    root.config(bg="white")
     root.geometry("960x540+333+135")
     root.resizable(False, False)
 
-    
+    util_frame = tk.Frame(root)
+    util_frame.place(relx=0, rely=0, anchor="nw")
+    profile_frame = tk.Frame(root)
+    profile_frame.place(relx=1, rely=0, anchor="ne")
+    task_frame = tk.Frame(root)
+    task_frame.place(relx=0.5, rely=1, anchor="s")
+
+    save_icon = tk.PhotoImage(file=constants.SAVEFILE)
+    save_button = tk.Button(util_frame, image=save_icon, bd=0, bg="white", command=taskutil.save_tasks)
+    save_button.grid(row=0, column=0)
+    filter_icon = tk.PhotoImage(file=constants.FILTERFILE)
+    filter_button = tk.Button(util_frame, image=filter_icon, bd=0, bg="white")
+    filter_button.grid(row=0, column=1)
+    profile_icon = tk.PhotoImage(file=constants.PROFILEFILE)
+    profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
+    profile_button.pack()
+    edit_icon = tk.PhotoImage(file=constants.EDITFILE)
+    edit_button = tk.Button(task_frame, image=edit_icon, bd=0, bg="white")
+
+    task_list = tk.Listbox(task_frame, width=70, height=25, bd=0)
+    for task in globalvar.user_tasks:
+        task_list.insert(tk.END, task.name)
+    task_list.pack()
     
     root.mainloop()

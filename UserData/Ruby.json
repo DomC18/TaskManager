@@ -1,0 +1,22 @@
+{
+    "Ruby": {
+        "username": "ruby.marie",
+        "password": "rupfaut123"
+    },
+    "tasks": [
+        {
+            "name": "task1",
+            "description": "short task",
+            "deadline": "tomorrow",
+            "status": 2,
+            "importance": 3
+        },
+        {
+            "name": "task2",
+            "description": "too much",
+            "deadline": "woah",
+            "status": 1,
+            "importance": 1
+        }
+    ]
+}
