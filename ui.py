@@ -66,6 +66,50 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
 
 
 
+class CustomListbox(tk.Frame):
+    def __init__(self, master=None, width=0, height=0, **kwargs):
+        super().__init__(master, **kwargs)
+        self.canvas = tk.Canvas(self, width=width, height=height)
+        self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.list_frame = tk.Frame(self.canvas)
+        self.bg_color = self.rgb_to_hex((240, 240, 240))
+
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
+
+        # Configure the canvas to update scroll region
+        self.list_frame.bind("<Configure>", self._on_frame_configure)
+
+        self.button_images = {}
+        self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
+        self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
+
+    def _on_frame_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def insert(self, item):
+        item_frame = tk.Frame(self.list_frame, padx=1)
+        name_label = tk.Label(item_frame, text=item, font=('Helvetica', 33))
+        name_label.pack(side="left", fill='x')
+        
+        edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
+        self.button_images.update({edit_button:self.edit_icon})
+        edit_button.configure(image=self.button_images[edit_button])
+        # edit_button.pack(side="right", fill="x")
+        
+        delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
+        self.button_images.update({delete_button:self.delete_icon})
+        delete_button.configure(image=self.button_images[delete_button])
+        # delete_button.pack(side="right", fill="x")
+        
+        item_frame.pack(fill="x")
+    
+    def rgb_to_hex(self, rgb):
+        """Convert RGB tuple to hexadecimal string."""
+        return '#{:02x}{:02x}{:02x}'.format(*rgb)
+
 
 def init() -> None:
     root = tk.Tk()
@@ -112,7 +156,7 @@ def init_task_interface() -> None:
     util_frame.place(relx=0, rely=0, anchor="nw")
     profile_frame = tk.Frame(root)
     profile_frame.place(relx=1, rely=0, anchor="ne")
-    task_frame = tk.Frame(root)
+    task_frame = tk.Frame(root, height=500)
     task_frame.place(relx=0.5, rely=1, anchor="s")
 
     save_icon = tk.PhotoImage(file=constants.SAVEFILE)
@@ -124,12 +168,13 @@ def init_task_interface() -> None:
     profile_icon = tk.PhotoImage(file=constants.PROFILEFILE)
     profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
     profile_button.pack()
-    edit_icon = tk.PhotoImage(file=constants.EDITFILE)
-    edit_button = tk.Button(task_frame, image=edit_icon, bd=0, bg="white")
 
-    task_list = tk.Listbox(task_frame, width=70, height=25, bd=0)
+    task_list = CustomListbox(task_frame, 425, 425)
     for task in globalvar.user_tasks:
-        task_list.insert(tk.END, task.name)
+        task_list.insert(task.name)
     task_list.pack()
     
     root.mainloop()
+
+taskutil.load_tasks()
+init_task_interface()

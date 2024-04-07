@@ -1,52 +1,45 @@
 import tkinter as tk
 
-class TaskManagerApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Task Manager")
+class CustomListbox(tk.Frame):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.canvas = tk.Canvas(self)
+        self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.list_frame = tk.Frame(self.canvas)
 
-        # Create a listbox for tasks
-        self.task_listbox = tk.Listbox(root, selectmode=tk.SINGLE)
-        self.task_listbox.pack(padx=10, pady=10)
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
 
-        # Add sample tasks
-        tasks = ["Buy groceries", "Finish report", "Exercise", "Read book"]
-        for task in tasks:
-            self.task_listbox.insert(tk.END, task)
+        # Configure the canvas to update scroll region
+        self.list_frame.bind("<Configure>", self._on_frame_configure)
 
-        # Create colored tags
-        self.tag_colors = {
-            "Personal": "blue",
-            "Work": "green",
-            "Health": "red",
-            "Misc": "purple"
-        }
+    def _on_frame_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-        # Add tags to tasks
-        for i, task in enumerate(tasks):
-            tag = list(self.tag_colors.keys())[i % len(self.tag_colors)]
-            self.task_listbox.itemconfig(i, bg=self.tag_colors[tag])
+    def insert(self, index, item):
+        item_frame = tk.Frame(self.list_frame)
+        label = tk.Label(item_frame, text=item, font=('Helvetica', 14))
+        label.pack(side="left", fill='x')
+        
+        # Add buttons
+        button1 = tk.Button(item_frame, text="Button 1")
+        button1.pack(side="left")
+        
+        button2 = tk.Button(item_frame, text="Button 2")
+        button2.pack(side="left")
+        
+        item_frame.pack(fill="x")
+        
+root = tk.Tk()
 
-        # Add utility icons (e.g., delete, edit)
-        # delete_icon = tk.PhotoImage(file="delete_icon.png")
-        # edit_icon = tk.PhotoImage(file="edit_icon.png")
+# Create a CustomListbox widget
+listbox = CustomListbox(root)
+listbox.pack()
 
-        self.delete_button = tk.Button(root, command=self.delete_task)
-        self.delete_button.pack(side=tk.LEFT, padx=5)
+# Insert some items into the Listbox
+for i in range(20):
+    listbox.insert(tk.END, f"Item {i}")
 
-        self.edit_button = tk.Button(root, command=self.edit_task)
-        self.edit_button.pack(side=tk.LEFT, padx=5)
-
-    def delete_task(self):
-        selected_task = self.task_listbox.get(self.task_listbox.curselection())
-        self.task_listbox.delete(self.task_listbox.curselection())
-        print(f"Deleted task: {selected_task}")
-
-    def edit_task(self):
-        selected_task = self.task_listbox.get(self.task_listbox.curselection())
-        print(f"Editing task: {selected_task}")
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = TaskManagerApp(root)
-    root.mainloop()
+root.mainloop()
