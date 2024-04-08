@@ -79,33 +79,39 @@ class CustomListbox(tk.Frame):
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.pack(side="right", fill="y")
 
-        # Configure the canvas to update scroll region
         self.list_frame.bind("<Configure>", self._on_frame_configure)
 
         self.button_images = {}
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
 
+        self.task_combos = {}
+
     def _on_frame_configure(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-    def insert(self, item):
+    def insert(self, idx:int, task:taskutil.Task):
         item_frame = tk.Frame(self.list_frame, padx=1)
-        name_label = tk.Label(item_frame, text=item, font=('Helvetica', 33))
+        name_label = tk.Label(item_frame, text=task.name, font=('Helvetica', 33))
         name_label.pack(side="left", fill='x')
         
+        y_multiplier = 0.01 + (idx*0.1375)
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
         edit_button.configure(image=self.button_images[edit_button])
-        # edit_button.pack(side="right", fill="x")
+        edit_button.place(relx=0.825, rely=y_multiplier, anchor="ne")
         
         delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({delete_button:self.delete_icon})
         delete_button.configure(image=self.button_images[delete_button])
-        # delete_button.pack(side="right", fill="x")
+        delete_button.place(relx=0.95, rely=y_multiplier, anchor="ne")
         
+        self.task_combos.update({task:[task.name, name_label, edit_button, delete_button]})
         item_frame.pack(fill="x")
     
+    def delete(self):
+        index = globalvar.user_tasks.index()
+
     def rgb_to_hex(self, rgb):
         """Convert RGB tuple to hexadecimal string."""
         return '#{:02x}{:02x}{:02x}'.format(*rgb)
@@ -170,8 +176,8 @@ def init_task_interface() -> None:
     profile_button.pack()
 
     task_list = CustomListbox(task_frame, 425, 425)
-    for task in globalvar.user_tasks:
-        task_list.insert(task.name)
+    for idx, task in enumerate(globalvar.user_tasks):
+        task_list.insert(idx, task)
     task_list.pack()
     
     root.mainloop()

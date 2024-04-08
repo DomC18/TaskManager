@@ -1,4 +1,4 @@
-from task import Task
+from Task import Task
 import tkinter as tk
 import globalvar
 import constants
