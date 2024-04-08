@@ -67,55 +67,85 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
 
 
 class CustomListbox(tk.Frame):
-    def __init__(self, master=None, width=0, height=0, **kwargs):
+    def __init__(self, master=None, width=0, height=0, **kwargs) -> None:
         super().__init__(master, **kwargs)
         self.canvas = tk.Canvas(self, width=width, height=height)
-        self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
         self.list_frame = tk.Frame(self.canvas)
         self.bg_color = self.rgb_to_hex((240, 240, 240))
 
         self.canvas.pack(side="left", fill="both", expand=True)
         self.canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        self.scrollbar.pack(side="right", fill="y")
 
-        self.list_frame.bind("<Configure>", self._on_frame_configure)
-
-        self.button_images = {}
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
 
-        self.task_combos = {}
+        self.button_images : dict = {}
+        self.task_combos : dict = {}
 
-    def _on_frame_configure(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        self.name_option = tk.Button()
+        self.desc_option = tk.Button()
+        self.deadline_option = tk.Button()
+        self.status_option = tk.Button()
+        self.importance_option = tk.Button()
+        self.exit_option = tk.Button()
 
-    def insert(self, idx:int, task:taskutil.Task):
-        item_frame = tk.Frame(self.list_frame, padx=1)
-        name_label = tk.Label(item_frame, text=task.name, font=('Helvetica', 33))
-        name_label.pack(side="left", fill='x')
+    def rgb_to_hex(self, rgb) -> str:
+        return '#{:02x}{:02x}{:02x}'.format(*rgb)
+
+    def insert(self, idx:int, task:taskutil.Task) -> None:
+        y_multiplier = 0.01 + (idx*0.13)
         
-        y_multiplier = 0.01 + (idx*0.1375)
+        name_label = tk.Label(self.canvas, text=task.name, font=('Helvetica', 33))
+        name_label.place(relx=0, rely=y_multiplier, anchor="nw")
+        
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
+        edit_button.configure(command= self.drop_down_edit)
         edit_button.configure(image=self.button_images[edit_button])
         edit_button.place(relx=0.825, rely=y_multiplier, anchor="ne")
         
         delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({delete_button:self.delete_icon})
+        delete_button.configure(command= lambda b=delete_button : self.delete(b))
         delete_button.configure(image=self.button_images[delete_button])
         delete_button.place(relx=0.95, rely=y_multiplier, anchor="ne")
         
-        self.task_combos.update({task:[task.name, name_label, edit_button, delete_button]})
-        item_frame.pack(fill="x")
+        self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button]})
     
-    def delete(self):
-        index = globalvar.user_tasks.index()
+    def exit_edit(self) -> None:
+        self.name_option.place_forget()
+        self.desc_option.place_forget()
+        self.deadline_option.place_forget()
+        self.status_option.place_forget()
+        self.importance_option.place_forget()
+        self.exit_option.place_forget()
 
-    def rgb_to_hex(self, rgb):
-        """Convert RGB tuple to hexadecimal string."""
-        return '#{:02x}{:02x}{:02x}'.format(*rgb)
+    def drop_down_edit(self) -> None:
+        ...
 
+    def delete(self, delete_button:tk.Button) -> None:
+        global task_list
+
+        task_names = self.task_combos.keys()
+        task_combos = self.task_combos.values()
+        
+        for combo in task_combos:
+            if combo[3] == delete_button:
+                name = combo[0]
+        
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+                
+        self.task_combos.pop(self.task_combos[name][0])
+        globalvar.user_tasks.pop(globalvar.user_tasks.index(taskutil.find_task(name)))
+        
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            task_list.insert(idx, task)
+        task_list.pack()
+    
 
 def init() -> None:
     root = tk.Tk()
@@ -152,7 +182,11 @@ def init() -> None:
 
     root.mainloop()
 
+task_list : CustomListbox
+
 def init_task_interface() -> None:
+    global task_list
+
     root = tk.Tk()
     root.config(bg="white")
     root.geometry("960x540+333+135")

@@ -1,4 +1,4 @@
-from Task import Task
+from task import Task
 import tkinter as tk
 import globalvar
 import constants
@@ -15,8 +15,11 @@ def edit_task(name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk
     globalvar.user_tasks[0].status = int(status_entry.get())
     globalvar.user_tasks[0].importance = int(importance_entry.get())
 
-def delete_task(task_name:str) -> None:
-    globalvar.user_tasks.remove(task_name)
+def find_task(task_name:str) -> Task:
+    for task in globalvar.user_tasks:
+        if task.name == task_name:
+            return task
+    return None
 
 def load_tasks() -> None:
     data:dict = {}
