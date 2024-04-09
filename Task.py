@@ -12,21 +12,20 @@ class Task:
     
     elements:list = []
 
-    status_keycodes = \
-    {
-        0: "Not Started",
-        1: "Stuck",
-        2: "In Progress",
-        4: "Almost Complete",
-        5: "Complete"
+    status_keycodes = {
+        0: ["Not Started", "NS", (0, 0, 0)],
+        1: ["Delayed", "D", (0, 0, 0)],
+        2: ["Underway", "U", (0, 0, 0)],
+        4: ["Almost Completed", "AC", (0, 0, 0)],
+        5: ["Finished", "F", (0, 0, 0)]
     }
-    importance_keycodes = \
-    {
-        0: "Very Low Importance",
-        1: "Low Importance",
-        2: "Medium Importance",
-        3: "High Importance",
-        4: "Very High Importance"
+
+    importance_keycodes = {
+        0: ["Negligible", "N", (0, 0, 0)],
+        1: ["Minimal", "M", (0, 0, 0)],
+        2: ["Average", "A", (0, 0, 0)],
+        3: ["Significant", "S", (0, 0, 0)],
+        4: ["Critical", "C", (0, 0, 0)]
     }
     
     def __init__(self, name:str="", description:str="", deadline:str="", status:int=0, importance:int=0) -> None:
@@ -51,10 +50,22 @@ class Task:
         return "".join(list_of_times)
 
     def get_status(self) -> str:
-        return self.status_keycodes[self.status]
+        return self.status_keycodes[self.status][0]
 
     def get_importance(self) -> str:
-        return self.importance_keycodes[self.importance]
+        return self.importance_keycodes[self.importance][0]
+    
+    def get_status_short(self) -> str:
+        return self.status_keycodes[self.status][1]
+
+    def get_importance_short(self) -> str:
+        return self.importance_keycodes[self.importance][1]
+
+    def get_status_color(self) -> tuple:
+        return self.status_keycodes[self.status][2]
+
+    def get_importance_color(self) -> tuple:
+        return self.importance_keycodes[self.importance][2]
 
     def change_name(self, new_name:str) -> None:
         self.name = new_name

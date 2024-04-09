@@ -83,6 +83,7 @@ class CustomListbox(tk.Frame):
         self.edit_large_icon = tk.PhotoImage(file=constants.EDITLARGEFILE)
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
+        self.info_icon = tk.PhotoImage(file=constants.INFOFILE)
 
         self.button_images : dict = {}
         self.task_combos : dict = {}
@@ -105,6 +106,7 @@ class CustomListbox(tk.Frame):
         self.screenshot_label:tk.Label
         self.edit_large:tk.Button
         self.back_button:tk.Button
+
         self.old_name:tk.Label
         self.old_desc:tk.Label
         self.old_dead:tk.Label
@@ -122,20 +124,26 @@ class CustomListbox(tk.Frame):
     def insert(self, idx:int, task:taskutil.Task) -> None:
         y_multiplier = 0.01 + (idx*0.13)
         
-        name_label = tk.Label(self.canvas, text=task.name, font=('Helvetica', 33))
+        name_label = tk.Label(self.canvas, text=task.name[:19], font=('Helvetica', 33))
         name_label.place(relx=0, rely=y_multiplier, anchor="nw")
         
+        # info_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
+        # self.button_images.update({info_button:self.info_icon})
+        # info_button.configure()
+        # info_button.configure(image=self.button_images[info_button])
+        # info_button.place(relx=0.775, rely=y_multiplier, anchor="ne")
+
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
         edit_button.configure(command=lambda n=task.name : self.edit_task_interface(n))
         edit_button.configure(image=self.button_images[edit_button])
-        edit_button.place(relx=0.825, rely=y_multiplier, anchor="ne")
+        edit_button.place(relx=0.875, rely=y_multiplier, anchor="ne")
         
         delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({delete_button:self.delete_icon})
         delete_button.configure(command=lambda b=delete_button : self.delete(b))
         delete_button.configure(image=self.button_images[delete_button])
-        delete_button.place(relx=0.95, rely=y_multiplier, anchor="ne")
+        delete_button.place(relx=0.975, rely=y_multiplier, anchor="ne")
         
         self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button]})
     
@@ -316,7 +324,7 @@ def init_task_interface() -> None:
     profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
     profile_button.pack()
 
-    task_list = CustomListbox(task_frame, 425, 425)
+    task_list = CustomListbox(task_frame, 550, 450)
     for idx, task in enumerate(globalvar.user_tasks):
         task_list.insert(idx, task)
     task_list.pack()
