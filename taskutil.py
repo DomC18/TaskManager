@@ -73,18 +73,14 @@ def sign_out(root:tk.Tk, init) -> None:
     root.destroy()
     init()
 
-def sorted_by_name() -> list[Task]:
+def name_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.name)
-    return globalvar.user_tasks
 
-def sorted_by_deadline() -> list[Task]:
+def deadline_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.deadline)
-    return globalvar.user_tasks
 
-def sorted_by_status() -> list[Task]:
+def status_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.status)
-    return globalvar.user_tasks
 
-def sorted_by_importance() -> list[Task]:
+def importance_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.importance)
-    return globalvar.user_tasks

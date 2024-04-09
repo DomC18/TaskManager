@@ -83,6 +83,7 @@ class CustomListbox(tk.Frame):
         self.edit_large_icon = tk.PhotoImage(file=constants.EDITLARGEFILE)
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
+        self.filter_large_icon = tk.PhotoImage(file=constants.FILTERLARGEFILE)
         self.info_icon = tk.PhotoImage(file=constants.INFOFILE)
 
         self.button_images : dict = {}
@@ -106,6 +107,11 @@ class CustomListbox(tk.Frame):
         self.screenshot_label:tk.Label
         self.edit_large:tk.Button
         self.back_button:tk.Button
+
+        self.filter_name:tk.Button
+        self.filter_dead:tk.Button
+        self.filter_status:tk.Button
+        self.filter_importance:tk.Button
 
         self.old_name:tk.Label
         self.old_desc:tk.Label
@@ -155,6 +161,80 @@ class CustomListbox(tk.Frame):
         self.importance_option.place_forget()
         self.exit_option.place_forget()
 
+    def filter_interface(self) -> None:
+        global root
+
+        self.x = root.winfo_rootx()
+        self.y = root.winfo_rooty()
+        self.w = root.winfo_width()
+        self.h = root.winfo_height()
+        self.screenshot = ImageGrab.grab(bbox=(self.x, self.y, self.x+self.w, self.y+self.h))
+        self.screenshot_photo = ImageTk.PhotoImage(self.screenshot)
+        self.screenshot_label = tk.Label(root, image=self.screenshot_photo)
+        self.screenshot_label.image = self.screenshot_photo
+        self.screenshot_label.pack()
+        self.blurred_screenshot = self.screenshot.filter(ImageFilter.GaussianBlur(9))
+        self.screenshot_photo = ImageTk.PhotoImage(self.blurred_screenshot)
+        self.screenshot_label.configure(image=self.screenshot_photo)
+        self.screenshot_label.image = self.screenshot_photo
+        self.screenshot_label.pack()
+
+        self.back_button = tk.Button(root, bg="white", fg="black", text="←", font=("Helvetica", 50, "bold"), relief="flat")
+        self.back_button.configure(command=self.back_from_filter)
+        self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
+
+        self.filter_large = tk.Label(root, image=self.filter_large_icon, bd=0, bg=self.bg_color)
+        self.filter_large.place(relx=0.125, rely=0.5, anchor="center")
+
+        self.filter_name = tk.Button(root, text="Filter by Name", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
+        self.filter_dead = tk.Button(root, text="Filter by Deadline", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
+        self.filter_status = tk.Button(root, text="Filter by Status", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
+        self.filter_importance = tk.Button(root, text="Filter by Importance", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
+        self.filter_name.configure(command=self.name_sort)
+        self.filter_dead.configure(command=self.dead_sort)
+        self.filter_status.configure(command=self.status_sort)
+        self.filter_importance.configure(command=self.importance_sort)
+        self.filter_name.place(relx=0.5, rely=1/5, anchor="center")
+        self.filter_dead.place(relx=0.5, rely=2/5, anchor="center")
+        self.filter_status.place(relx=0.5, rely=3/5, anchor="center")
+        self.filter_importance.place(relx=0.5, rely=4/5, anchor="center")
+
+    def name_sort(self) -> None:
+        taskutil.name_sort()
+        self.back_from_filter()
+    
+    def dead_sort(self) -> None:
+        taskutil.deadline_sort()
+        self.back_from_filter()
+    
+    def status_sort(self) -> None:
+        taskutil.status_sort()
+        self.back_from_filter()
+    
+    def importance_sort(self) -> None:
+        taskutil.importance_sort()
+        self.back_from_filter()
+
+    def back_from_filter(self) -> None:
+        self.back_button.destroy()
+        self.screenshot_label.destroy()
+        self.filter_large.destroy()
+        self.filter_name.destroy()
+        self.filter_dead.destroy()
+        self.filter_status.destroy()
+        self.filter_importance.destroy()
+
+        task_names = self.task_combos.keys()
+
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            task_list.insert(idx, task)
+        task_list.pack()
+
     def edit_task_interface(self, name) -> None:
         global root
 
@@ -176,7 +256,7 @@ class CustomListbox(tk.Frame):
         self.screenshot_label.pack()
 
         self.back_button = tk.Button(root, bg="white", fg="black", text="←", font=("Helvetica", 50, "bold"), relief="flat")
-        self.back_button.configure(command=self.back_to_main)
+        self.back_button.configure(command=self.back_from_edit)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
         self.old_name = tk.Label(root, text="name", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
@@ -206,7 +286,7 @@ class CustomListbox(tk.Frame):
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, dead_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
         taskutil.edit_task(name, name_entry, desc_entry, dead_entry, status_entry, importance_entry)
-        self.back_to_main()
+        self.back_from_edit()
 
         task_names = self.task_combos.keys()
 
@@ -219,7 +299,7 @@ class CustomListbox(tk.Frame):
             task_list.insert(idx, task)
         task_list.pack()
 
-    def back_to_main(self) -> None:
+    def back_from_edit(self) -> None:
         self.back_button.destroy()
         self.screenshot_label.destroy()
         self.edit_large.destroy()
@@ -314,20 +394,21 @@ def init_task_interface() -> None:
     task_frame = tk.Frame(root, height=500)
     task_frame.place(relx=0.5, rely=1, anchor="s")
 
+    task_list = CustomListbox(task_frame, 550, 450)
+    for idx, task in enumerate(globalvar.user_tasks):
+        task_list.insert(idx, task)
+    task_list.pack()
+
     save_icon = tk.PhotoImage(file=constants.SAVEFILE)
     save_button = tk.Button(util_frame, image=save_icon, bd=0, bg="white", command=taskutil.save_tasks)
     save_button.grid(row=0, column=0)
     filter_icon = tk.PhotoImage(file=constants.FILTERFILE)
     filter_button = tk.Button(util_frame, image=filter_icon, bd=0, bg="white")
+    filter_button.configure(command=task_list.filter_interface)
     filter_button.grid(row=0, column=1)
     profile_icon = tk.PhotoImage(file=constants.PROFILEFILE)
     profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
     profile_button.pack()
-
-    task_list = CustomListbox(task_frame, 550, 450)
-    for idx, task in enumerate(globalvar.user_tasks):
-        task_list.insert(idx, task)
-    task_list.pack()
     
     root.mainloop()
 

@@ -8,43 +8,22 @@
             "name": "pluh",
             "description": "short task",
             "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
-        },
-        {
-            "name": "hellnah",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 3,
-            "importance": 3
-        },
-        {
-            "name": "hi",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
-        },
-        {
-            "name": "hello",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
+            "status": 1,
             "importance": 3
         },
         {
             "name": "looey",
-            "description": "short task",
-            "deadline": "tomorrow",
+            "description": "short done",
+            "deadline": "evening",
             "status": 2,
-            "importance": 3
+            "importance": 2
         },
         {
             "name": "dooky",
             "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
+            "deadline": "morning",
+            "status": 3,
+            "importance": 1
         }
     ]
 }
