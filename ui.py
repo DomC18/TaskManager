@@ -506,6 +506,3 @@ def init_task_interface() -> None:
 
     
     root.mainloop()
-
-taskutil.load_tasks()
-init_task_interface()

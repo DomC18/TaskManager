@@ -5,27 +5,6 @@
     },
     "tasks": [
         {
-            "name": "dooky",
-            "description": "short task",
-            "deadline": "morning",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "looey",
-            "description": "short done",
-            "deadline": "evening",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "pluh",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
             "name": "drake",
             "description": "short task",
             "deadline": "morning",
