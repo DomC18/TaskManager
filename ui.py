@@ -1,3 +1,5 @@
+from PIL import ImageTk, ImageFilter, Image, ImageGrab
+import pygame as pyg
 import tkinter as tk
 import globalvar
 import constants
@@ -68,6 +70,8 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
 
 class CustomListbox(tk.Frame):
     def __init__(self, master=None, width=0, height=0, **kwargs) -> None:
+        global root
+
         super().__init__(master, **kwargs)
         self.canvas = tk.Canvas(self, width=width, height=height)
         self.list_frame = tk.Frame(self.canvas)
@@ -76,6 +80,7 @@ class CustomListbox(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
 
+        self.edit_large_icon = tk.PhotoImage(file=constants.EDITLARGEFILE)
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
 
@@ -89,6 +94,28 @@ class CustomListbox(tk.Frame):
         self.importance_option = tk.Button()
         self.exit_option = tk.Button()
 
+        self.curr_task_name:str
+        self.x:int
+        self.y:int
+        self.w:int
+        self.h:int
+        self.blurred_screenshot:Image
+        self.screenshot:Image
+        self.screenshot_photo:ImageTk.PhotoImage
+        self.screenshot_label:tk.Label
+        self.edit_large:tk.Button
+        self.back_button:tk.Button
+        self.old_name:tk.Label
+        self.old_desc:tk.Label
+        self.old_dead:tk.Label
+        self.old_status:tk.Label
+        self.old_importance:tk.Label
+        self.name_entry:tk.Entry
+        self.desc_entry:tk.Entry
+        self.dead_entry:tk.Entry
+        self.status_entry:tk.Entry
+        self.importance_entry:tk.Entry
+
     def rgb_to_hex(self, rgb) -> str:
         return '#{:02x}{:02x}{:02x}'.format(*rgb)
 
@@ -100,13 +127,13 @@ class CustomListbox(tk.Frame):
         
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
-        edit_button.configure(command= self.drop_down_edit)
+        edit_button.configure(command=lambda n=task.name : self.edit_task_interface(n))
         edit_button.configure(image=self.button_images[edit_button])
         edit_button.place(relx=0.825, rely=y_multiplier, anchor="ne")
         
         delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({delete_button:self.delete_icon})
-        delete_button.configure(command= lambda b=delete_button : self.delete(b))
+        delete_button.configure(command=lambda b=delete_button : self.delete(b))
         delete_button.configure(image=self.button_images[delete_button])
         delete_button.place(relx=0.95, rely=y_multiplier, anchor="ne")
         
@@ -120,8 +147,84 @@ class CustomListbox(tk.Frame):
         self.importance_option.place_forget()
         self.exit_option.place_forget()
 
-    def drop_down_edit(self) -> None:
-        ...
+    def edit_task_interface(self, name) -> None:
+        global root
+
+        self.curr_task_name = name
+
+        self.x = root.winfo_rootx()
+        self.y = root.winfo_rooty()
+        self.w = root.winfo_width()
+        self.h = root.winfo_height()
+        self.screenshot = ImageGrab.grab(bbox=(self.x, self.y, self.x+self.w, self.y+self.h))
+        self.screenshot_photo = ImageTk.PhotoImage(self.screenshot)
+        self.screenshot_label = tk.Label(root, image=self.screenshot_photo)
+        self.screenshot_label.image = self.screenshot_photo
+        self.screenshot_label.pack()
+        self.blurred_screenshot = self.screenshot.filter(ImageFilter.GaussianBlur(9))
+        self.screenshot_photo = ImageTk.PhotoImage(self.blurred_screenshot)
+        self.screenshot_label.configure(image=self.screenshot_photo)
+        self.screenshot_label.image = self.screenshot_photo
+        self.screenshot_label.pack()
+
+        self.back_button = tk.Button(root, bg="white", fg="black", text="←", font=("Helvetica", 50, "bold"), relief="flat")
+        self.back_button.configure(command=self.back_to_main)
+        self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
+
+        self.old_name = tk.Label(root, text="name", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_name.place(relx=0.25, rely=1/6, anchor="w")
+        self.old_desc = tk.Label(root, text="description", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
+        self.old_dead = tk.Label(root, text="deadline", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_dead.place(relx=0.25, rely=3/6, anchor="w")
+        self.old_status = tk.Label(root, text="status", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_status.place(relx=0.25, rely=4/6, anchor="w")
+        self.old_importance = tk.Label(root, text="importance", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_importance.place(relx=0.25, rely=5/6, anchor="w")
+        self.name_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.name_entry.place(relx=0.95, rely=1/6, anchor="e")
+        self.desc_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.desc_entry.place(relx=0.95, rely=2/6, anchor="e")
+        self.dead_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.dead_entry.place(relx=0.95, rely=3/6, anchor="e")
+        self.status_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.status_entry.place(relx=0.95, rely=4/6, anchor="e")
+        self.importance_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.importance_entry.place(relx=0.95, rely=5/6, anchor="e")
+
+        self.edit_large = tk.Button(root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
+        self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, dede=self.dead_entry, se=self.status_entry, ie=self.importance_entry: self.edit_task(n, ne, dese, dede, se, ie))
+        self.edit_large.place(relx=0.125, rely=0.5, anchor="center")
+    
+    def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, dead_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
+        taskutil.edit_task(name, name_entry, desc_entry, dead_entry, status_entry, importance_entry)
+        self.back_to_main()
+
+        task_names = self.task_combos.keys()
+
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            task_list.insert(idx, task)
+        task_list.pack()
+
+    def back_to_main(self) -> None:
+        self.back_button.destroy()
+        self.screenshot_label.destroy()
+        self.edit_large.destroy()
+        self.old_name.destroy()
+        self.old_desc.destroy()
+        self.old_dead.destroy()
+        self.old_status.destroy()
+        self.old_importance.destroy()
+        self.name_entry.destroy()
+        self.desc_entry.destroy()
+        self.dead_entry.destroy()
+        self.status_entry.destroy()
+        self.importance_entry.destroy()
 
     def delete(self, delete_button:tk.Button) -> None:
         global task_list
@@ -148,6 +251,8 @@ class CustomListbox(tk.Frame):
     
 
 def init() -> None:
+    global root
+
     root = tk.Tk()
     root.config(bg="grey")
     root.geometry("560x480+480+270")
@@ -183,9 +288,11 @@ def init() -> None:
     root.mainloop()
 
 task_list : CustomListbox
+root : tk.Tk
 
 def init_task_interface() -> None:
     global task_list
+    global root
 
     root = tk.Tk()
     root.config(bg="white")

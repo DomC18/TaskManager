@@ -1,4 +1,4 @@
-from task import Task
+from Task import Task
 import tkinter as tk
 import globalvar
 import constants
@@ -8,12 +8,18 @@ import os
 def add_task(name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
     globalvar.user_tasks.append(Task(name_entry.get(), description_entry.get(), deadline_entry.get(), int(status_entry.get()), int(importance_entry.get())))
 
-def edit_task(name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
-    globalvar.user_tasks[0].name = name_entry.get()
-    globalvar.user_tasks[0].description = description_entry.get()
-    globalvar.user_tasks[0].deadline = deadline_entry.get()
-    globalvar.user_tasks[0].status = int(status_entry.get())
-    globalvar.user_tasks[0].importance = int(importance_entry.get())
+def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
+    task = globalvar.user_tasks.index(find_task(task_name))
+    if name_entry.get() != "":
+        globalvar.user_tasks[task].name = name_entry.get()
+    if description_entry.get() != "":
+        globalvar.user_tasks[task].description = description_entry.get()
+    if deadline_entry.get() != "":
+        globalvar.user_tasks[task].deadline = deadline_entry.get()
+    if status_entry.get() != "":
+        globalvar.user_tasks[task].status = int(status_entry.get())
+    if importance_entry.get() != "":
+        globalvar.user_tasks[task].importance = int(importance_entry.get())
 
 def find_task(task_name:str) -> Task:
     for task in globalvar.user_tasks:

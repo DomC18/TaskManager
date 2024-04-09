@@ -12,10 +12,10 @@
             "importance": 3
         },
         {
-            "name": "no",
+            "name": "hellnah",
             "description": "short task",
             "deadline": "tomorrow",
-            "status": 2,
+            "status": 3,
             "importance": 3
         },
         {
@@ -41,27 +41,6 @@
         },
         {
             "name": "dooky",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
-        },
-        {
-            "name": "poop",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
-        },
-        {
-            "name": "pluh",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": 2,
-            "importance": 3
-        },
-        {
-            "name": "no",
             "description": "short task",
             "deadline": "tomorrow",
             "status": 2,
