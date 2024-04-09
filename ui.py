@@ -121,14 +121,17 @@ class CustomListbox(tk.Frame):
         self.name_entry:tk.Entry
         self.desc_entry:tk.Entry
         self.dead_entry:tk.Entry
-        self.status_entry:tk.Entry
-        self.importance_entry:tk.Entry
+        self.status_entry:tk.OptionMenu
+        self.status_var = tk.StringVar()
+        self.importance_entry:tk.OptionMenu
+        self.importance_var = tk.StringVar()
 
     def rgb_to_hex(self, rgb) -> str:
         return '#{:02x}{:02x}{:02x}'.format(*rgb)
 
     def insert(self, idx:int, task:taskutil.Task) -> None:
         y_multiplier = 0.01 + (idx*0.13)
+        y_multiplier2 = 0.075 + (idx*0.13)
         
         name_label = tk.Label(self.canvas, text=task.name[:19], font=('Helvetica', 33))
         name_label.place(relx=0, rely=y_multiplier, anchor="nw")
@@ -138,6 +141,11 @@ class CustomListbox(tk.Frame):
         # info_button.configure()
         # info_button.configure(image=self.button_images[info_button])
         # info_button.place(relx=0.775, rely=y_multiplier, anchor="ne")
+
+        status_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_status_color()), text=task.get_status_short(), font=("Times New Roman", 40, "bold"))
+        status_indicator.place(relx=0.5, rely=y_multiplier2, anchor="center")
+        importance_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_importance_color()), text=task.get_importance_short(), font=("Times New Roman", 40, "bold"))
+        importance_indicator.place(relx=0.6, rely=y_multiplier2, anchor="center")
 
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
@@ -151,16 +159,8 @@ class CustomListbox(tk.Frame):
         delete_button.configure(image=self.button_images[delete_button])
         delete_button.place(relx=0.975, rely=y_multiplier, anchor="ne")
         
-        self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button]})
+        self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button, status_indicator, importance_indicator]})
     
-    def exit_edit(self) -> None:
-        self.name_option.place_forget()
-        self.desc_option.place_forget()
-        self.deadline_option.place_forget()
-        self.status_option.place_forget()
-        self.importance_option.place_forget()
-        self.exit_option.place_forget()
-
     def filter_interface(self) -> None:
         global root
 
@@ -230,6 +230,8 @@ class CustomListbox(tk.Frame):
             self.task_combos[task_name][1].destroy()
             self.task_combos[task_name][2].destroy()
             self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
         task_list.place_forget()
         for idx, task in enumerate(globalvar.user_tasks):
             task_list.insert(idx, task)
@@ -259,15 +261,15 @@ class CustomListbox(tk.Frame):
         self.back_button.configure(command=self.back_from_edit)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
-        self.old_name = tk.Label(root, text="name", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_name = tk.Label(root, text=name, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_name.place(relx=0.25, rely=1/6, anchor="w")
-        self.old_desc = tk.Label(root, text="description", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_desc = tk.Label(root, text=taskutil.find_task(name).description, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
-        self.old_dead = tk.Label(root, text="deadline", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_dead = tk.Label(root, text=taskutil.find_task(name).deadline, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_dead.place(relx=0.25, rely=3/6, anchor="w")
-        self.old_status = tk.Label(root, text="status", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_status = tk.Label(root, text=taskutil.find_task(name).status, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_status.place(relx=0.25, rely=4/6, anchor="w")
-        self.old_importance = tk.Label(root, text="importance", bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_importance = tk.Label(root, text=taskutil.find_task(name).importance, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_importance.place(relx=0.25, rely=5/6, anchor="w")
         self.name_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
         self.name_entry.place(relx=0.95, rely=1/6, anchor="e")
@@ -275,13 +277,13 @@ class CustomListbox(tk.Frame):
         self.desc_entry.place(relx=0.95, rely=2/6, anchor="e")
         self.dead_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
         self.dead_entry.place(relx=0.95, rely=3/6, anchor="e")
-        self.status_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.status_entry = tk.OptionMenu(root, self.status_var, "Not Started", "Delayed", "Underway", "Almost Completed", "Finished")
         self.status_entry.place(relx=0.95, rely=4/6, anchor="e")
-        self.importance_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.importance_entry = tk.OptionMenu(root, self.importance_var, "Minimal", "Trivial", "Average", "Significant", "Critical")
         self.importance_entry.place(relx=0.95, rely=5/6, anchor="e")
 
         self.edit_large = tk.Button(root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
-        self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, dede=self.dead_entry, se=self.status_entry, ie=self.importance_entry: self.edit_task(n, ne, dese, dede, se, ie))
+        self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, dede=self.dead_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, dede, se, ie))
         self.edit_large.place(relx=0.125, rely=0.5, anchor="center")
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, dead_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
@@ -294,6 +296,8 @@ class CustomListbox(tk.Frame):
             self.task_combos[task_name][1].destroy()
             self.task_combos[task_name][2].destroy()
             self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
         task_list.place_forget()
         for idx, task in enumerate(globalvar.user_tasks):
             task_list.insert(idx, task)
@@ -328,6 +332,8 @@ class CustomListbox(tk.Frame):
             self.task_combos[task_name][1].destroy()
             self.task_combos[task_name][2].destroy()
             self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
                 
         self.task_combos.pop(self.task_combos[name][0])
         globalvar.user_tasks.pop(globalvar.user_tasks.index(taskutil.find_task(name)))

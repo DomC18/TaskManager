@@ -7,28 +7,28 @@ class Task:
     name:str
     description:str
     deadline:str
-    status:int
-    importance:int
+    status:str
+    importance:str
     
     elements:list = []
 
     status_keycodes = {
-        0: ["Not Started", "NS", (0, 0, 0)],
-        1: ["Delayed", "D", (0, 0, 0)],
-        2: ["Underway", "U", (0, 0, 0)],
-        4: ["Almost Completed", "AC", (0, 0, 0)],
-        5: ["Finished", "F", (0, 0, 0)]
+        "Not Started": ["NS", (0, 0, 0)],
+        "Delayed": ["D", (128, 0, 0)],
+        "Underway": ["U", (237, 41, 57)],
+        "Almost Completed": ["AC", (152, 251, 152)],
+        "Finished": ["F", (199, 234, 70)]
     }
 
     importance_keycodes = {
-        0: ["Negligible", "N", (0, 0, 0)],
-        1: ["Minimal", "M", (0, 0, 0)],
-        2: ["Average", "A", (0, 0, 0)],
-        3: ["Significant", "S", (0, 0, 0)],
-        4: ["Critical", "C", (0, 0, 0)]
+        "Negligible": ["N", (199, 234, 70)],
+        "Minimal": ["M", (152, 251, 152)],
+        "Average": ["A", (237, 41, 57)],
+        "Significant": ["S", (128, 0, 0)],
+        "Critical": ["C", (0, 0, 0)]
     }
     
-    def __init__(self, name:str="", description:str="", deadline:str="", status:int=0, importance:int=0) -> None:
+    def __init__(self, name:str="NewTask", description:str="", deadline:str="", status:str="Not Started", importance:str="Negligible") -> None:
         self.name = name
         self.description = description
         self.date_added = self.get_current_date()
@@ -48,36 +48,18 @@ class Task:
         localtime = time.localtime()
         list_of_times = [str(localtime[3]), str(localtime[4]), str(localtime[5])]
         return "".join(list_of_times)
-
-    def get_status(self) -> str:
-        return self.status_keycodes[self.status][0]
-
-    def get_importance(self) -> str:
-        return self.importance_keycodes[self.importance][0]
     
     def get_status_short(self) -> str:
-        return self.status_keycodes[self.status][1]
+        return self.status_keycodes[self.status][0]
 
     def get_importance_short(self) -> str:
-        return self.importance_keycodes[self.importance][1]
+        return self.importance_keycodes[self.importance][0]
 
     def get_status_color(self) -> tuple:
-        return self.status_keycodes[self.status][2]
+        return self.status_keycodes[self.status][1]
 
     def get_importance_color(self) -> tuple:
-        return self.importance_keycodes[self.importance][2]
-
-    def change_name(self, new_name:str) -> None:
-        self.name = new_name
-    
-    def change_description(self, new_description:str) -> None:
-        self.description = new_description
-
-    def change_date_to_finish(self, new_deadline:str) -> None:
-        self.deadline = new_deadline
-
-    def change_importance(self, new_importance:int) -> None:
-        self.importance = new_importance
+        return self.importance_keycodes[self.importance][1]
     
     def __eq__(self, other) -> bool:
         return self.elements == other.elements

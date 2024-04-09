@@ -5,25 +5,25 @@
     },
     "tasks": [
         {
-            "name": "pluh",
+            "name": "dooky",
             "description": "short task",
-            "deadline": "tomorrow",
-            "status": 1,
-            "importance": 3
+            "deadline": "morning",
+            "status": "Underway",
+            "importance": "Average"
         },
         {
             "name": "looey",
             "description": "short done",
             "deadline": "evening",
-            "status": 2,
-            "importance": 2
+            "status": "Underway",
+            "importance": "Average"
         },
         {
-            "name": "dooky",
+            "name": "pluh",
             "description": "short task",
-            "deadline": "morning",
-            "status": 3,
-            "importance": 1
+            "deadline": "tomorrow",
+            "status": "Underway",
+            "importance": "Average"
         }
     ]
 }
