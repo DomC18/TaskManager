@@ -1,4 +1,4 @@
-import ui as ui
+import ui
 
 def main() -> None:
     ui.init()

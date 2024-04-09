@@ -3,6 +3,7 @@ import os
 TASKMANAGERDIR = os.path.realpath(__file__)[:-12]
 USERDATADIR = TASKMANAGERDIR + "UserData\\"
 ICONDIR = TASKMANAGERDIR + "Icons\\"
+ADDFILE = ICONDIR + "add.png"
 DELETEFILE = ICONDIR + "delete.png"
 EDITFILE = ICONDIR + "edit.png"
 EDITLARGEFILE = ICONDIR + "editlarge.png"

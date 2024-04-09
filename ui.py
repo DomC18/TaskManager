@@ -1,4 +1,5 @@
 from PIL import ImageTk, ImageFilter, Image, ImageGrab
+from Task import Task
 import pygame as pyg
 import tkinter as tk
 import globalvar
@@ -80,6 +81,8 @@ class CustomListbox(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
 
+        self.list_index:int
+
         self.edit_large_icon = tk.PhotoImage(file=constants.EDITLARGEFILE)
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
@@ -133,20 +136,9 @@ class CustomListbox(tk.Frame):
         y_multiplier = 0.01 + (idx*0.13)
         y_multiplier2 = 0.075 + (idx*0.13)
         
-        name_label = tk.Label(self.canvas, text=task.name[:19], font=('Helvetica', 33))
+        name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 33))
         name_label.place(relx=0, rely=y_multiplier, anchor="nw")
         
-        # info_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
-        # self.button_images.update({info_button:self.info_icon})
-        # info_button.configure()
-        # info_button.configure(image=self.button_images[info_button])
-        # info_button.place(relx=0.775, rely=y_multiplier, anchor="ne")
-
-        status_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_status_color()), text=task.get_status_short(), font=("Times New Roman", 40, "bold"))
-        status_indicator.place(relx=0.5, rely=y_multiplier2, anchor="center")
-        importance_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_importance_color()), text=task.get_importance_short(), font=("Times New Roman", 40, "bold"))
-        importance_indicator.place(relx=0.6, rely=y_multiplier2, anchor="center")
-
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
         edit_button.configure(command=lambda n=task.name : self.edit_task_interface(n))
@@ -158,9 +150,78 @@ class CustomListbox(tk.Frame):
         delete_button.configure(command=lambda b=delete_button : self.delete(b))
         delete_button.configure(image=self.button_images[delete_button])
         delete_button.place(relx=0.975, rely=y_multiplier, anchor="ne")
+
+        status_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_status_color()), text=task.get_status_short(), font=("Times New Roman", 40, "bold"), fg=task.get_status_font())
+        status_indicator.place(relx=0.575, rely=y_multiplier2, anchor="center")
+        importance_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_importance_color()), text=task.get_importance_short(), font=("Times New Roman", 40, "bold"), fg=task.get_importance_font())
+        importance_indicator.place(relx=0.7, rely=y_multiplier2, anchor="center")
         
         self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button, status_indicator, importance_indicator]})
     
+    def move_down(self) -> None:
+        if self.list_index+8 > len(globalvar.user_tasks):
+            return
+
+        self.list_index += 1
+        task_names = self.task_combos.keys()
+
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
+        task_list.pack()
+
+    def move_up(self) -> None:
+        if self.list_index <= 0:
+            return
+        
+        self.list_index -= 1
+        task_names = self.task_combos.keys()
+
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
+        task_list.pack()
+
+    def add_task(self) -> None:
+        globalvar.user_tasks.insert(0, Task())
+
+        self.list_index = 0
+        task_names = self.task_combos.keys()
+        for task_name in task_names:
+            self.task_combos[task_name][1].destroy()
+            self.task_combos[task_name][2].destroy()
+            self.task_combos[task_name][3].destroy()
+            self.task_combos[task_name][4].destroy()
+            self.task_combos[task_name][5].destroy()
+        task_list.place_forget()
+        for idx, task in enumerate(globalvar.user_tasks):
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
+        task_list.pack()
+
     def filter_interface(self) -> None:
         global root
 
@@ -234,7 +295,11 @@ class CustomListbox(tk.Frame):
             self.task_combos[task_name][5].destroy()
         task_list.place_forget()
         for idx, task in enumerate(globalvar.user_tasks):
-            task_list.insert(idx, task)
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
         task_list.pack()
 
     def edit_task_interface(self, name) -> None:
@@ -300,7 +365,11 @@ class CustomListbox(tk.Frame):
             self.task_combos[task_name][5].destroy()
         task_list.place_forget()
         for idx, task in enumerate(globalvar.user_tasks):
-            task_list.insert(idx, task)
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
         task_list.pack()
 
     def back_from_edit(self) -> None:
@@ -340,7 +409,11 @@ class CustomListbox(tk.Frame):
         
         task_list.place_forget()
         for idx, task in enumerate(globalvar.user_tasks):
-            task_list.insert(idx, task)
+            if idx < task_list.list_index:
+                continue
+            if idx > task_list.list_index + 6:
+                break
+            task_list.insert(idx-self.list_index, task)
         task_list.pack()
     
 
@@ -401,8 +474,13 @@ def init_task_interface() -> None:
     task_frame.place(relx=0.5, rely=1, anchor="s")
 
     task_list = CustomListbox(task_frame, 550, 450)
+    task_list.list_index = 0
     for idx, task in enumerate(globalvar.user_tasks):
-        task_list.insert(idx, task)
+        if idx < task_list.list_index:
+            continue
+        if idx > task_list.list_index + 6:
+            break
+        task_list.insert(idx-task_list.list_index, task)
     task_list.pack()
 
     save_icon = tk.PhotoImage(file=constants.SAVEFILE)
@@ -415,6 +493,17 @@ def init_task_interface() -> None:
     profile_icon = tk.PhotoImage(file=constants.PROFILEFILE)
     profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
     profile_button.pack()
+    up_button = tk.Button(root, text="↑", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    up_button.configure(command=task_list.move_up)
+    up_button.place(relx=0.7875, rely=0.1675, anchor="nw")
+    down_button = tk.Button(root, text="↓", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    down_button.configure(command=task_list.move_down)
+    down_button.place(relx=0.7875, rely=0.9875, anchor="sw")
+    add_icon = tk.PhotoImage(file=constants.ADDFILE)
+    add_button = tk.Button(root, image=add_icon, bg="white", bd=0)
+    add_button.configure(command=task_list.add_task)
+    add_button.place(relx=0.1, rely=0.5, anchor="center")
+
     
     root.mainloop()
 

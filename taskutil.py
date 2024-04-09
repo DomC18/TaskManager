@@ -5,9 +5,6 @@ import constants
 import json
 import os
 
-def add_task() -> None:
-    globalvar.user_tasks.append(Task())
-
 def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk.Entry, status:tk.StringVar, importance:tk.StringVar) -> None:
     task = globalvar.user_tasks.index(find_task(task_name))
     if name_entry.get() != "":
@@ -80,7 +77,7 @@ def deadline_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.deadline)
 
 def status_sort() -> None:
-    globalvar.user_tasks.sort(key=lambda task : task.status)
+    globalvar.user_tasks.sort(key=lambda task : task.get_status_sort())
 
 def importance_sort() -> None:
-    globalvar.user_tasks.sort(key=lambda task : task.importance)
+    globalvar.user_tasks.sort(key=lambda task : task.get_importance_sort())

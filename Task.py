@@ -13,19 +13,19 @@ class Task:
     elements:list = []
 
     status_keycodes = {
-        "Not Started": ["NS", (0, 0, 0)],
-        "Delayed": ["D", (128, 0, 0)],
-        "Underway": ["U", (237, 41, 57)],
-        "Almost Completed": ["AC", (152, 251, 152)],
-        "Finished": ["F", (199, 234, 70)]
+        "Not Started": ["NS", (0, 0, 0), "white", 0],
+        "Delayed": ["D", (128, 0, 0), "black", 1],
+        "Underway": ["U", (237, 41, 57), "black", 2],
+        "Almost Completed": ["AC", (152, 251, 152), "black", 3],
+        "Finished": ["F", (199, 234, 70), "black", 4]
     }
 
     importance_keycodes = {
-        "Negligible": ["N", (199, 234, 70)],
-        "Minimal": ["M", (152, 251, 152)],
-        "Average": ["A", (237, 41, 57)],
-        "Significant": ["S", (128, 0, 0)],
-        "Critical": ["C", (0, 0, 0)]
+        "Negligible": ["N", (199, 234, 70), "black", 4],
+        "Trivial": ["T", (152, 251, 152), "black", 3],
+        "Average": ["A", (237, 41, 57), "black", 2],
+        "Significant": ["S", (128, 0, 0), "black", 1],
+        "Critical": ["C", (0, 0, 0), "white", 0]
     }
     
     def __init__(self, name:str="NewTask", description:str="", deadline:str="", status:str="Not Started", importance:str="Negligible") -> None:
@@ -60,6 +60,18 @@ class Task:
 
     def get_importance_color(self) -> tuple:
         return self.importance_keycodes[self.importance][1]
+
+    def get_status_font(self) -> str:
+        return self.status_keycodes[self.status][2]
+
+    def get_importance_font(self) -> str:
+        return self.importance_keycodes[self.importance][2]
+
+    def get_status_sort(self) -> int:
+        return self.status_keycodes[self.status][3]
+
+    def get_importance_sort(self) -> int:
+        return self.importance_keycodes[self.importance][3]
     
     def __eq__(self, other) -> bool:
         return self.elements == other.elements
