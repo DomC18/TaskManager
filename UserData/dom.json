@@ -5,6 +5,13 @@
     },
     "tasks": [
         {
+            "name": "finish this project",
+            "description": "for csp",
+            "deadline": "april 10th",
+            "status": "Almost Completed",
+            "importance": "Critical"
+        },
+        {
             "name": "drake",
             "description": "short task",
             "deadline": "morning",

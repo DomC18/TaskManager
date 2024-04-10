@@ -28,7 +28,7 @@ class Task:
         "Critical": ["C", (0, 0, 0), "white", 0]
     }
     
-    def __init__(self, name:str="NewTask", description:str="", deadline:str="", status:str="Not Started", importance:str="Negligible") -> None:
+    def __init__(self, name:str="newtask", description:str="description", deadline:str="deadline", status:str="Not Started", importance:str="Negligible") -> None:
         self.name = name
         self.description = description
         self.date_added = self.get_current_date()

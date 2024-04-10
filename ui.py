@@ -26,7 +26,6 @@ def verify_existing(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk
     globalvar.password = password
 
     if username == user_entry.get() and password == password_entry.get():
-        print("Login Successful")
         root.destroy()
         taskutil.load_tasks()
         init_task_interface()
@@ -46,7 +45,7 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
         open(file_dir, "r")
         return True
     except FileNotFoundError:
-        print("Creating new account...")
+        pass
 
     data = {
         name: {
@@ -62,7 +61,6 @@ def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.En
     with open(file_dir, "w") as file:
         json.dump(data, file, indent=4)
 
-    print("Account created successfully.")
     root.destroy()
     init_task_interface()
 
@@ -203,6 +201,9 @@ class CustomListbox(tk.Frame):
         task_list.pack()
 
     def add_task(self) -> None:
+        if taskutil.amount_task("newtask") == 1:
+            return
+            
         globalvar.user_tasks.insert(0, Task())
 
         self.list_index = 0

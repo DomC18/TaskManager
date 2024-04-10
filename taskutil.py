@@ -18,6 +18,13 @@ def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, de
     if importance.get() != "":
         globalvar.user_tasks[task].importance = importance.get()
 
+def amount_task(task_name:str) -> int:
+    task_num = 0
+    for task in globalvar.user_tasks:
+        if task.name == task_name:
+            task_num += 1
+    return task_num
+
 def find_task(task_name:str) -> Task:
     for task in globalvar.user_tasks:
         if task.name == task_name:
