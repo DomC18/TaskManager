@@ -5,45 +5,31 @@
     },
     "tasks": [
         {
-            "name": "finish this project",
-            "description": "for csp",
-            "deadline": "april 10th",
-            "status": "Almost Completed",
+            "name": "promposal",
+            "description": "anamae",
+            "deadline": "04/11/2024",
+            "status": "Underway",
             "importance": "Critical"
         },
         {
-            "name": "drake",
-            "description": "short task",
-            "deadline": "morning",
-            "status": "Underway",
-            "importance": "Average"
+            "name": "homework",
+            "description": "english",
+            "deadline": "04/12/2024",
+            "status": "Not Started",
+            "importance": "Significant"
         },
         {
-            "name": "drizzy",
-            "description": "short done",
-            "deadline": "evening",
-            "status": "Underway",
-            "importance": "Average"
+            "name": "finish this project",
+            "description": "for csp",
+            "deadline": "05/01/2024",
+            "status": "Almost Completed",
+            "importance": "Significant"
         },
         {
-            "name": "slime",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "gangy",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "oopsies",
-            "description": "short task",
-            "deadline": "tomorrow",
-            "status": "Underway",
+            "name": "tamu stuff",
+            "description": "tamu",
+            "deadline": "07/04/2024",
+            "status": "Not Started",
             "importance": "Average"
         }
     ]

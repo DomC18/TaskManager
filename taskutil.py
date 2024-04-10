@@ -2,21 +2,38 @@ from Task import Task
 import tkinter as tk
 import globalvar
 import constants
+import time
 import json
 import os
 
-def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, deadline_entry:tk.Entry, status:tk.StringVar, importance:tk.StringVar) -> None:
+def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
     task = globalvar.user_tasks.index(find_task(task_name))
+    new_date = ""
     if name_entry.get() != "":
         globalvar.user_tasks[task].name = name_entry.get()
     if description_entry.get() != "":
         globalvar.user_tasks[task].description = description_entry.get()
-    if deadline_entry.get() != "":
-        globalvar.user_tasks[task].deadline = deadline_entry.get()
     if status.get() != "":
         globalvar.user_tasks[task].status = status.get()
     if importance.get() != "":
         globalvar.user_tasks[task].importance = importance.get()
+    if month.get() != "" or (globalvar.user_tasks[task].deadline[0:2] != "00"):
+        new_date = month.get()[-2:]
+    else:
+        return False
+    if day.get() != "" or (globalvar.user_tasks[task].deadline[3:5] != "00"):
+        new_date += "/"
+        new_date += day.get()
+    else:
+        return False
+    if year.get() != "" or (globalvar.user_tasks[task].deadline[6:10] != "0000"):
+        new_date += "/"
+        new_date += year.get()
+        globalvar.user_tasks[task].deadline = new_date
+    else:
+        return False
+    
+    return True
 
 def amount_task(task_name:str) -> int:
     task_num = 0
@@ -81,10 +98,17 @@ def name_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.name)
 
 def deadline_sort() -> None:
-    globalvar.user_tasks.sort(key=lambda task : task.deadline)
+    globalvar.user_tasks.sort(key=lambda task : task.get_date_differential())
 
 def status_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.get_status_sort())
 
 def importance_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.get_importance_sort())
+
+def get_valid_years() -> list:
+    valid_years = []
+    current_year_raw = time.localtime()[0]
+    for i in range(10):
+        valid_years.append(str(current_year_raw+i))
+    return valid_years

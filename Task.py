@@ -12,6 +12,21 @@ class Task:
     
     elements:list = []
 
+    days_completed_keycodes = {
+        1:0,
+        2:31,
+        3:(31+29 if time.localtime()[0] % 4 == 0 else 31+28),
+        4:(31+29+31 if time.localtime()[0] % 4 == 0 else 31+28+31),
+        5:(31+29+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30),
+        6:(31+29+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31),
+        7:(31+29+31+30+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30),
+        8:(31+29+31+30+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31),
+        9:(31+29+31+30+31+30+31+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31),
+        10:(31+29+31+30+31+30+31+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30),
+        11:(31+29+31+30+31+30+31+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30+31),
+        12:(31+29+31+30+31+30+31+31+30+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30+31+30)
+    }
+
     status_keycodes = {
         "Not Started": ["NS", (0, 0, 0), "white", 0],
         "Delayed": ["D", (128, 0, 0), "black", 1],
@@ -28,27 +43,37 @@ class Task:
         "Critical": ["C", (0, 0, 0), "white", 0]
     }
     
-    def __init__(self, name:str="newtask", description:str="description", deadline:str="deadline", status:str="Not Started", importance:str="Negligible") -> None:
+    def __init__(self, name:str="newtask", description:str="description", deadline:str="00/00/0000", status:str="Not Started", importance:str="Negligible") -> None:
         self.name = name
         self.description = description
-        self.date_added = self.get_current_date()
-        self.time_added = self.get_current_time()
         self.deadline = deadline
         self.status = status
         self.importance = importance
         
         self.elements = [self.name, self.description, self.deadline, self.status, self.importance]
 
-    def get_current_date(self) -> str:
-        localtime = time.localtime()
-        list_of_date = [str(localtime[1]), str(localtime[2]), str(localtime[0])]
-        return "".join(list_of_date)
+    def get_date_differential(self) -> int:
+        curr_date = self.get_current_date()
+        curr_month = curr_date[0]
+        curr_day = curr_date[1]
+        curr_year = curr_date[2]
+        task_date = self.get_task_date()
+        task_month = task_date[0]
+        task_day = task_date[1]
+        task_year = task_date[2]
+        return (task_year*365-curr_year*365) + \
+               (self.days_completed_keycodes[task_month]-self.days_completed_keycodes[curr_month]) + \
+               (task_day - curr_day)
 
-    def get_current_time(self) -> str:
+    def get_current_date(self) -> list:
         localtime = time.localtime()
-        list_of_times = [str(localtime[3]), str(localtime[4]), str(localtime[5])]
-        return "".join(list_of_times)
+        current_date = [localtime[1], localtime[2], localtime[0]]
+        return current_date
     
+    def get_task_date(self) -> list:
+        task_date = [int(self.deadline[0:2]), int(self.deadline[3:5]), int(self.deadline[6:10])]
+        return task_date
+
     def get_status_short(self) -> str:
         return self.status_keycodes[self.status][0]
 

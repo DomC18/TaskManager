@@ -1,0 +1,15 @@
+{
+    "Kipp": {
+        "username": "25KHenry",
+        "password": "25KHenry"
+    },
+    "tasks": [
+        {
+            "name": "Physics Homework",
+            "description": "7A Homework",
+            "deadline": "00/00/0000",
+            "status": "Not Started",
+            "importance": "Average"
+        }
+    ]
+}

@@ -85,7 +85,6 @@ class CustomListbox(tk.Frame):
         self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
         self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
         self.filter_large_icon = tk.PhotoImage(file=constants.FILTERLARGEFILE)
-        self.info_icon = tk.PhotoImage(file=constants.INFOFILE)
 
         self.button_images : dict = {}
         self.task_combos : dict = {}
@@ -121,11 +120,21 @@ class CustomListbox(tk.Frame):
         self.old_importance:tk.Label
         self.name_entry:tk.Entry
         self.desc_entry:tk.Entry
-        self.dead_entry:tk.Entry
         self.status_entry:tk.OptionMenu
         self.status_var = tk.StringVar()
         self.importance_entry:tk.OptionMenu
         self.importance_var = tk.StringVar()
+
+        self.month_entry:tk.OptionMenu
+        self.day_entry:tk.OptionMenu
+        self.year_entry:tk.OptionMenu
+        self.month_label:tk.Label
+        self.day_label:tk.Label
+        self.year_label:tk.Label
+        self.month_var = tk.StringVar()
+        self.day_var = tk.StringVar()
+        self.year_var = tk.StringVar()
+        self.valid_years = taskutil.get_valid_years()
 
     def rgb_to_hex(self, rgb) -> str:
         return '#{:02x}{:02x}{:02x}'.format(*rgb)
@@ -327,7 +336,7 @@ class CustomListbox(tk.Frame):
         self.back_button.configure(command=self.back_from_edit)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
-        self.old_name = tk.Label(root, text=name, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_name = tk.Label(root, text=name[:17], bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_name.place(relx=0.25, rely=1/6, anchor="w")
         self.old_desc = tk.Label(root, text=taskutil.find_task(name).description, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
@@ -341,19 +350,25 @@ class CustomListbox(tk.Frame):
         self.name_entry.place(relx=0.95, rely=1/6, anchor="e")
         self.desc_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
         self.desc_entry.place(relx=0.95, rely=2/6, anchor="e")
-        self.dead_entry = tk.Entry(root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
-        self.dead_entry.place(relx=0.95, rely=3/6, anchor="e")
         self.status_entry = tk.OptionMenu(root, self.status_var, "Not Started", "Delayed", "Underway", "Almost Completed", "Finished")
         self.status_entry.place(relx=0.95, rely=4/6, anchor="e")
         self.importance_entry = tk.OptionMenu(root, self.importance_var, "Minimal", "Trivial", "Average", "Significant", "Critical")
         self.importance_entry.place(relx=0.95, rely=5/6, anchor="e")
 
+        self.year_entry = tk.OptionMenu(root, self.year_var, self.valid_years[0], self.valid_years[1], self.valid_years[2], self.valid_years[3], self.valid_years[4], self.valid_years[5], self.valid_years[6], self.valid_years[7], self.valid_years[8], self.valid_years[9])
+        self.year_entry.place(relx=0.9425, rely=3/6, anchor="e")
+        self.month_entry = tk.OptionMenu(root, self.month_var, "January:01", "February:02", "March:03", "April:04", "May:05", "June:06", "July:07", "August:08", "September:09", "October:10", "November:11", "December:12")
+        self.month_entry.place(relx=0.675, rely=3/6, anchor="w")
+        self.day_entry = tk.OptionMenu(root, self.day_var, "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31")
+        self.day_entry.place(relx=((0.9425+0.675)/2), rely=3/6, anchor="center")
+
         self.edit_large = tk.Button(root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
-        self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, dede=self.dead_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, dede, se, ie))
+        self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, se, ie))
         self.edit_large.place(relx=0.125, rely=0.5, anchor="center")
     
-    def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, dead_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
-        taskutil.edit_task(name, name_entry, desc_entry, dead_entry, status_entry, importance_entry)
+    def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
+        if not taskutil.edit_task(name, name_entry, desc_entry, self.month_var, self.day_var, self.year_var, status_entry, importance_entry):
+            return
         self.back_from_edit()
 
         task_names = self.task_combos.keys()
@@ -384,9 +399,17 @@ class CustomListbox(tk.Frame):
         self.old_importance.destroy()
         self.name_entry.destroy()
         self.desc_entry.destroy()
-        self.dead_entry.destroy()
+        self.month_entry.destroy()
+        self.day_entry.destroy()
+        self.year_entry.destroy()
         self.status_entry.destroy()
         self.importance_entry.destroy()
+
+        self.month_var.set("")
+        self.day_var.set("")
+        self.year_var.set("")
+        self.status_var.set("")
+        self.importance_var.set("")
 
     def delete(self, delete_button:tk.Button) -> None:
         global task_list
@@ -429,19 +452,19 @@ def init() -> None:
     logo_label = tk.Label(root, text="TaskManager Login", font=("Arial", 40), bg="#f0f0f0", justify="center")
     logo_label.grid(row=0, column=0, columnspan=2, pady=20)
 
-    firstname_label = tk.Label(root, text="First Name:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    firstname_label = tk.Label(root, text="*First Name:", font=("Arial", 25), bg="#f0f0f0", justify="center")
     firstname_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
 
     firstname_entry = tk.Entry(root, font=("Arial", 25), justify="left")
     firstname_entry.grid(row=1, column=1, padx=10, pady=5)
 
-    username_label = tk.Label(root, text="Username:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    username_label = tk.Label(root, text="*Username:", font=("Arial", 25), bg="#f0f0f0", justify="center")
     username_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
 
     username_entry = tk.Entry(root, font=("Arial", 25), justify="left")
     username_entry.grid(row=2, column=1, padx=10, pady=5)
 
-    password_label = tk.Label(root, text="Password:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    password_label = tk.Label(root, text="*Password:", font=("Arial", 25), bg="#f0f0f0", justify="center")
     password_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
 
     password_entry = tk.Entry(root, show="*", font=("Arial", 25), justify="left")
@@ -450,7 +473,7 @@ def init() -> None:
     login_button = tk.Button(root, text="Login", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda f=firstname_entry, u=username_entry, p=password_entry, r=root : verify_existing(f,u,p,r))
     login_button.grid(row=4, column=0, columnspan=2, pady=20)
 
-    register_label = tk.Button(root, text="Don't have an account? Register here.", font=("Arial", 20), bg="#f0f0f0", justify="center", command=lambda f=firstname_entry, u=username_entry, p=password_entry, r=root : register_new(f,u,p,r))
+    register_label = tk.Button(root, text="Don't have an account? \nRegister after inputting credentials.", font=("Arial", 20), bg="#f0f0f0", justify="center", command=lambda f=firstname_entry, u=username_entry, p=password_entry, r=root : register_new(f,u,p,r))
     register_label.grid(row=5, column=0, columnspan=2, pady=5)
 
     root.mainloop()
