@@ -448,7 +448,8 @@ def init() -> None:
 
     root = tk.Tk()
     root.config(bg="grey")
-    root.geometry("560x480+480+270")
+    root.title("Login")
+    root.geometry("590x480+480+270")
     root.resizable(False, False)
 
     logo_label = tk.Label(root, text="TaskManager Login", font=("Arial", 40), bg="#f0f0f0", justify="center")
@@ -489,6 +490,7 @@ def init_task_interface() -> None:
 
     root = tk.Tk()
     root.config(bg="white")
+    root.title("TaskManager")
     root.geometry("960x540+333+135")
     root.resizable(False, False)
 
