@@ -340,7 +340,7 @@ class CustomListbox(tk.Frame):
         self.old_name.place(relx=0.25, rely=1/6, anchor="w")
         self.old_desc = tk.Label(root, text=taskutil.find_task(name).description, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
-        self.old_dead = tk.Label(root, text=taskutil.find_task(name).deadline, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_dead = tk.Label(root, text=((taskutil.find_task(name).deadline + "*") if (taskutil.find_task(name).deadline == "00/00/0000") else (taskutil.find_task(name).deadline)), bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_dead.place(relx=0.25, rely=3/6, anchor="w")
         self.old_status = tk.Label(root, text=taskutil.find_task(name).status, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_status.place(relx=0.25, rely=4/6, anchor="w")
@@ -443,6 +443,8 @@ class CustomListbox(tk.Frame):
 
 def init() -> None:
     global root
+
+    globalvar.user_tasks = []
 
     root = tk.Tk()
     root.config(bg="grey")

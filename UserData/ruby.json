@@ -1,0 +1,15 @@
+{
+    "ruby": {
+        "username": "ruby",
+        "password": "rupfaut123"
+    },
+    "tasks": [
+        {
+            "name": "spend money",
+            "description": "become broke",
+            "deadline": "04/19/2024",
+            "status": "Almost Completed",
+            "importance": "Critical"
+        }
+    ]
+}

@@ -1,5 +1,5 @@
-name = "dom"
-username = "DomC18"
-password = "fortnite"
+name = ""
+username = ""
+password = ""
 
 user_tasks = []
