@@ -12,24 +12,17 @@
             "importance": "Significant"
         },
         {
-            "name": "homework",
-            "description": "english",
-            "deadline": "05/07/2024",
-            "status": "Finished",
-            "importance": "Significant"
+            "name": "tamu stuff",
+            "description": "tamu",
+            "deadline": "06/01/2024",
+            "status": "Delayed",
+            "importance": "Average"
         },
         {
             "name": "cim proj",
             "description": "cim",
             "deadline": "05/31/2024",
             "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "tamu stuff",
-            "description": "tamu",
-            "deadline": "06/01/2024",
-            "status": "Delayed",
             "importance": "Average"
         }
     ]
