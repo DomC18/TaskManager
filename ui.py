@@ -8,30 +8,17 @@ import json
 def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label) -> None:
     data:dict = {}
     name = first_entry.get()
-    name_invalid = name == ""
 
-    file_dir = constants.USERDATADIR + name + ".json"
-    try:
-        with open(file_dir, "r") as file:
-            data = json.load(file)
-    except FileNotFoundError:
+    name_invalid = first_entry.get() == ""
+    username_invalid = user_entry.get() == ""
+    password_invalid = password_entry.get() == ""
+
+    if (name_invalid or username_invalid or password_invalid):
         if name_invalid:
             first_label.configure(fg="red")
-        else:
+        else: 
             first_label.configure(fg="black")
-        return
-        
-    username = data[name]["username"]
-    password = data[name]["password"]
 
-    username_invalid = username == ""
-    password_invalid = password == ""
-
-    globalvar.name = name
-    globalvar.username = username
-    globalvar.password = password
-
-    if (username_invalid or password_invalid):
         if username_invalid:
             user_label.configure(fg="red")
         else: 
@@ -41,16 +28,25 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
             password_label.configure(fg="red")
         else: 
             password_label.configure(fg="black")
+    
+    file_dir = constants.USERDATADIR + name + ".json"
+    try:
+        with open(file_dir, "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        return
+        
+    username = data[name]["username"]
+    password = data[name]["password"]
+
+    globalvar.name = name
+    globalvar.username = username
+    globalvar.password = password
 
     if username == user_entry.get() and password == password_entry.get():
         root.destroy()
         taskutil.load_tasks()
         init_task_interface()
-    else:
-        first_label.configure(fg="red")
-        user_label.configure(fg="red")
-        password_label.configure(fg="red")
-
 
 def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label) -> None:
     data:dict = {}
@@ -77,7 +73,7 @@ def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password
             password_label.configure(fg="red")
         else: 
             password_label.configure(fg="black")
-        
+
         return
     
     file_dir = constants.USERDATADIR + name + ".json"
