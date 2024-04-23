@@ -33,7 +33,7 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
         with open(file_dir, "r") as file:
             data = json.load(file)
     except FileNotFoundError:
-        return
+        register_new(root, first_entry, user_entry, password_entry, task_func)
         
     username = data[name]["username"]
     password = data[name]["password"]
@@ -47,41 +47,16 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
         taskutil.load_tasks()
         task_func()
 
-def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label, task_func) -> None:
-    data:dict = {}
+def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, task_func) -> None:
     name = first_entry.get()
+
+    if name == "":
+        return
+
     username = user_entry.get()
     password = password_entry.get()
 
-    name_invalid = name == ""
-    username_invalid = username == ""
-    password_invalid = password == ""
-
-    if (name_invalid or username_invalid or password_invalid):
-        if name_invalid:
-            first_label.configure(fg="red")
-        else: 
-            first_label.configure(fg="black")
-
-        if username_invalid:
-            user_label.configure(fg="red")
-        else: 
-            user_label.configure(fg="black")
-
-        if password_invalid:
-            password_label.configure(fg="red")
-        else: 
-            password_label.configure(fg="black")
-
-        return
-    
     file_dir = constants.USERDATADIR + name + ".json"
-
-    try:
-        open(file_dir, "r")
-        return True
-    except FileNotFoundError:
-        pass
 
     user_data = {
         name: {

@@ -16,7 +16,7 @@ def init() -> None:
     root = tk.Tk()
     root.config(bg="grey")
     root.title("Login")
-    root.geometry("590x480+480+270")
+    root.geometry("600x400+480+270")
     root.resizable(False, False)
 
     logo_label = tk.Label(root, text="TaskManager Login", font=("Arial", 40), bg="#f0f0f0", justify="center")
@@ -40,11 +40,8 @@ def init() -> None:
     password_entry = tk.Entry(root, show="*", font=("Arial", 25), justify="left")
     password_entry.grid(row=3, column=1, padx=10, pady=5)
 
-    login_button = tk.Button(root, text="Login", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label, func=init_task_interface : verify_existing(r,f,u,p,fl,ul,pl,func))
+    login_button = tk.Button(root, text="Login/Register", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label, func=init_task_interface : verify_existing(r,f,u,p,fl,ul,pl,func))
     login_button.grid(row=4, column=0, columnspan=2, pady=20)
-
-    register_label = tk.Button(root, text="Don't have an account? \nRegister after inputting credentials.", font=("Arial", 20), bg="#f0f0f0", justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label, func=init_task_interface : register_new(r,f,u,p,fl,ul,pl,func))
-    register_label.grid(row=5, column=0, columnspan=2, pady=5)
 
     root.mainloop()
 
