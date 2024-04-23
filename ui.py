@@ -5,36 +5,79 @@ import constants
 import taskutil
 import json
 
-def verify_existing(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, root:tk.Tk) -> None:
+def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label) -> None:
     data:dict = {}
-
     name = first_entry.get()
+    name_invalid = name == ""
+
     file_dir = constants.USERDATADIR + name + ".json"
     try:
         with open(file_dir, "r") as file:
             data = json.load(file)
     except FileNotFoundError:
+        if name_invalid:
+            first_label.configure(fg="red")
+        else:
+            first_label.configure(fg="black")
         return
         
     username = data[name]["username"]
     password = data[name]["password"]
 
+    username_invalid = username == ""
+    password_invalid = password == ""
+
     globalvar.name = name
     globalvar.username = username
     globalvar.password = password
+
+    if (username_invalid or password_invalid):
+        if username_invalid:
+            user_label.configure(fg="red")
+        else: 
+            user_label.configure(fg="black")
+
+        if password_invalid:
+            password_label.configure(fg="red")
+        else: 
+            password_label.configure(fg="black")
 
     if username == user_entry.get() and password == password_entry.get():
         root.destroy()
         taskutil.load_tasks()
         init_task_interface()
+    else:
+        first_label.configure(fg="red")
+        user_label.configure(fg="red")
+        password_label.configure(fg="red")
 
 
-def register_new(first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, root:tk.Tk) -> None:
+def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label) -> None:
     data:dict = {}
     name = first_entry.get()
     username = user_entry.get()
     password = password_entry.get()
-    if (name == "" or username == "" or password == ""):
+
+    name_invalid = name == ""
+    username_invalid = username == ""
+    password_invalid = password == ""
+
+    if (name_invalid or username_invalid or password_invalid):
+        if name_invalid:
+            first_label.configure(fg="red")
+        else: 
+            first_label.configure(fg="black")
+
+        if username_invalid:
+            user_label.configure(fg="red")
+        else: 
+            user_label.configure(fg="black")
+
+        if password_invalid:
+            password_label.configure(fg="red")
+        else: 
+            password_label.configure(fg="black")
+        
         return
     
     file_dir = constants.USERDATADIR + name + ".json"
@@ -96,10 +139,10 @@ def init() -> None:
     password_entry = tk.Entry(root, show="*", font=("Arial", 25), justify="left")
     password_entry.grid(row=3, column=1, padx=10, pady=5)
 
-    login_button = tk.Button(root, text="Login", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda f=firstname_entry, u=username_entry, p=password_entry, r=root : verify_existing(f,u,p,r))
+    login_button = tk.Button(root, text="Login", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label : verify_existing(r,f,u,p,fl,ul,pl))
     login_button.grid(row=4, column=0, columnspan=2, pady=20)
 
-    register_label = tk.Button(root, text="Don't have an account? \nRegister after inputting credentials.", font=("Arial", 20), bg="#f0f0f0", justify="center", command=lambda f=firstname_entry, u=username_entry, p=password_entry, r=root : register_new(f,u,p,r))
+    register_label = tk.Button(root, text="Don't have an account? \nRegister after inputting credentials.", font=("Arial", 20), bg="#f0f0f0", justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label : register_new(r,f,u,p,fl,ul,pl))
     register_label.grid(row=5, column=0, columnspan=2, pady=5)
 
     root.mainloop()

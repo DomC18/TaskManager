@@ -26,20 +26,6 @@
             "importance": "Average"
         },
         {
-            "name": "teetime",
-            "description": "description",
-            "deadline": "07/02/2024",
-            "status": "Delayed",
-            "importance": "Trivial"
-        },
-        {
-            "name": "t",
-            "description": "description",
-            "deadline": "09/02/2024",
-            "status": "Delayed",
-            "importance": "Minimal"
-        },
-        {
             "name": "teetee",
             "description": "description",
             "deadline": "11/07/2024",
@@ -52,6 +38,27 @@
             "deadline": "05/02/2025",
             "status": "Underway",
             "importance": "Average"
+        },
+        {
+            "name": "teetime",
+            "description": "description",
+            "deadline": "07/02/2024",
+            "status": "Delayed",
+            "importance": "Trivial"
+        },
+        {
+            "name": "newtask",
+            "description": "description",
+            "deadline": "04/23/2024",
+            "status": "Not Started",
+            "importance": "Minimal"
+        },
+        {
+            "name": "t",
+            "description": "description",
+            "deadline": "09/02/2024",
+            "status": "Delayed",
+            "importance": "Minimal"
         }
     ]
 }
