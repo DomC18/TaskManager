@@ -36,19 +36,36 @@ class Task:
     }
 
     importance_keycodes = {
-        "Negligible": ["N", (199, 234, 70), "black", 4],
+        "Minimal": ["M", (199, 234, 70), "black", 4],
         "Trivial": ["T", (152, 251, 152), "black", 3],
         "Average": ["A", (237, 41, 57), "black", 2],
         "Significant": ["S", (128, 0, 0), "black", 1],
         "Critical": ["C", (0, 0, 0), "white", 0]
     }
     
-    def __init__(self, name:str="newtask", description:str="description", deadline:str="00/00/0000", status:str="Not Started", importance:str="Negligible") -> None:
+    def get_current_date(self) -> list:
+        localtime = time.localtime()
+        current_date = [localtime[1], localtime[2], localtime[0]]
+        return current_date
+    
+    def date_list_to_string(self, date_list:list) -> str:
+        new_month:str = ""
+
+        if date_list[0] < 10:
+            new_month = "0" + str(date_list[0])
+        
+        return new_month + "/" + str(date_list[1]) + "/" + str(date_list[2])
+
+    def __init__(self, name:str="newtask", description:str="description", deadline:str="00/00/0000", status:str="Not Started", importance:str="Minimal") -> None:
         self.name = name
         self.description = description
-        self.deadline = deadline
         self.status = status
         self.importance = importance
+
+        if deadline == "00/00/0000":
+            self.deadline = self.date_list_to_string(self.get_current_date())
+        else:
+            self.deadline = deadline
         
         self.elements = [self.name, self.description, self.deadline, self.status, self.importance]
 
@@ -64,11 +81,6 @@ class Task:
         return (task_year*365-curr_year*365) + \
                (self.days_completed_keycodes[task_month]-self.days_completed_keycodes[curr_month]) + \
                (task_day - curr_day)
-
-    def get_current_date(self) -> list:
-        localtime = time.localtime()
-        current_date = [localtime[1], localtime[2], localtime[0]]
-        return current_date
     
     def get_task_date(self) -> list:
         task_date = [int(self.deadline[0:2]), int(self.deadline[3:5]), int(self.deadline[6:10])]

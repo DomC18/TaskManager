@@ -6,6 +6,16 @@ import time
 import json
 import os
 
+def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar) -> bool:
+    task = globalvar.user_tasks.index(find_task(task_name))
+    if month.get() == "" and (globalvar.user_tasks[task].deadline[0:2] == "00"):
+        return False
+    if day.get() == "" and (globalvar.user_tasks[task].deadline[3:5] == "00"):
+        return False
+    if year.get() == "" and (globalvar.user_tasks[task].deadline[6:10] == "0000"):
+        return False
+    return True
+
 def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
     task = globalvar.user_tasks.index(find_task(task_name))
     new_date = ""
@@ -17,24 +27,26 @@ def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, mo
         globalvar.user_tasks[task].status = status.get()
     if importance.get() != "":
         globalvar.user_tasks[task].importance = importance.get()
-    if month.get() != "" or (globalvar.user_tasks[task].deadline[0:2] != "00"):
-        new_date = month.get()[-2:]
-    else:
-        return False
-    if day.get() != "" or (globalvar.user_tasks[task].deadline[3:5] != "00"):
-        new_date += "/"
-        new_date += day.get()
-    else:
-        return False
-    if year.get() != "" or (globalvar.user_tasks[task].deadline[6:10] != "0000"):
-        new_date += "/"
-        new_date += year.get()
-        globalvar.user_tasks[task].deadline = new_date
-    else:
-        return False
-    
-    return True
 
+    if month.get() != "":
+        new_date = month.get()[-2:]
+        if day.get() != "":
+            new_date += "/"
+            new_date += day.get()
+            if year.get() != "":
+                new_date += "/"
+                new_date += year.get()
+                globalvar.user_tasks[task].deadline = new_date
+                return True
+            else:
+                return False
+        else:
+            return False
+    elif (globalvar.user_tasks[task].deadline[0:2] != "00") and (globalvar.user_tasks[task].deadline[3:5] != "00") and (globalvar.user_tasks[task].deadline[6:10] != "0000"):
+        return True
+    else:
+        return False
+        
 def amount_task(task_name:str) -> int:
     task_num = 0
     for task in globalvar.user_tasks:
@@ -89,10 +101,10 @@ def save_tasks() -> None:
     with open(file_dir, "w") as file:
         json.dump(data, file, indent=4)
 
-def sign_out(root:tk.Tk, init) -> None:
+def sign_out(root:tk.Tk, init_func) -> None:
     save_tasks()
     root.destroy()
-    init()
+    init_func()
 
 def name_sort() -> None:
     globalvar.user_tasks.sort(key=lambda task : task.name)
