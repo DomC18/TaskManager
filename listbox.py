@@ -169,6 +169,8 @@ class Listbox(tk.Frame):
             self.insert(idx-self.list_index, task)
         self.pack()
 
+        taskutil.save_tasks()
+
     def filter_interface(self) -> None:
         self.x = self.root.winfo_rootx()
         self.y = self.root.winfo_rooty()
@@ -302,7 +304,7 @@ class Listbox(tk.Frame):
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
         if not taskutil.edit_task(name, name_entry, desc_entry, self.month_var, self.day_var, self.year_var, status_entry, importance_entry):
             return
-        self.back_from_edit(name)
+        self.back_from_edit(name_entry.get() if name_entry.get() != "" else name)
 
         task_names = self.task_combos.keys()
 

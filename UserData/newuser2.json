@@ -1,0 +1,22 @@
+{
+    "newuser2": {
+        "username": "newuser2",
+        "password": "newuser2"
+    },
+    "tasks": [
+        {
+            "name": "gov",
+            "description": "description",
+            "deadline": "04/23/2024",
+            "status": "Underway",
+            "importance": "Minimal"
+        },
+        {
+            "name": "newtask",
+            "description": "description",
+            "deadline": "07/19/2024",
+            "status": "Not Started",
+            "importance": "Minimal"
+        }
+    ]
+}

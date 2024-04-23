@@ -83,11 +83,14 @@ def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password
     except FileNotFoundError:
         pass
 
-    data = {
+    user_data = {
         name: {
             "username": username,
             "password": password
-        }
+        },
+        "tasks": [
+            
+        ]
     }
 
     globalvar.name = name
@@ -95,7 +98,7 @@ def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password
     globalvar.password = password
 
     with open(file_dir, "w") as file:
-        json.dump(data, file, indent=4)
+        json.dump(user_data, file, indent=4)
 
     root.destroy()
     task_func()
