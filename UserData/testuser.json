@@ -1,0 +1,15 @@
+{
+    "testuser": {
+        "username": "testuser",
+        "password": "testuser"
+    },
+    "tasks": [
+        {
+            "name": "newtask",
+            "description": "description",
+            "deadline": "04/23/2024",
+            "status": "Not Started",
+            "importance": "Minimal"
+        }
+    ]
+}

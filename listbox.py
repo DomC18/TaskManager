@@ -43,6 +43,7 @@ class Listbox(tk.Frame):
         self.screenshot_photo:ImageTk.PhotoImage
         self.screenshot_label:tk.Label
         self.edit_large:tk.Button
+        self.edit_label:tk.Label
         self.back_button:tk.Button
 
         self.filter_name:tk.Button
@@ -299,7 +300,9 @@ class Listbox(tk.Frame):
 
         self.edit_large = tk.Button(self.root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
         self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, se, ie))
-        self.edit_large.place(relx=0.125, rely=0.5, anchor="center")
+        self.edit_large.place(relx=0.125, rely=0.4, anchor="center")
+        self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 35, "bold"), bg="white", fg="black")
+        self.edit_label.place(relx=0.125, rely=0.6, anchor="center")
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
         if not taskutil.edit_task(name, name_entry, desc_entry, self.month_var, self.day_var, self.year_var, status_entry, importance_entry):
@@ -330,6 +333,7 @@ class Listbox(tk.Frame):
         self.back_button.destroy()
         self.screenshot_label.destroy()
         self.edit_large.destroy()
+        self.edit_label.destroy()
         self.old_name.destroy()
         self.old_desc.destroy()
         self.old_dead.destroy()
