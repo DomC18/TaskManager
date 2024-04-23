@@ -60,10 +60,10 @@ def init_task_interface() -> None:
     util_frame.place(relx=0, rely=0, anchor="nw")
     profile_frame = tk.Frame(root, bg="white")
     profile_frame.place(relx=1, rely=0, anchor="ne")
-    task_frame = tk.Frame(root, height=500)
+    task_frame = tk.Frame(root)
     task_frame.place(relx=0.5, rely=1, anchor="s")
 
-    task_list = Listbox(task_frame, root, 550, 450)
+    task_list = Listbox(task_frame, root, 550, 450, "grey")
     task_list.list_index = 0
     for idx, task in enumerate(globalvar.user_tasks):
         if idx < task_list.list_index:
@@ -81,9 +81,9 @@ def init_task_interface() -> None:
     filter_icon = tk.PhotoImage(file=constants.FILTERFILE)
     filter_button = tk.Button(util_frame, image=filter_icon, bd=0, bg="white")
     filter_button.configure(command=task_list.filter_interface)
-    filter_button.grid(row=0, column=2)
+    filter_button.grid(row=1, column=0)
     filter_label = tk.Label(util_frame, text="Filter", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
-    filter_label.grid(row=0, column=3)
+    filter_label.grid(row=1, column=1)
 
     profile_label = tk.Label(profile_frame, text="Log Out", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
     profile_label.grid(row=0, column=0)
@@ -91,10 +91,10 @@ def init_task_interface() -> None:
     profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
     profile_button.grid(row=0, column=1)
 
-    up_button = tk.Button(root, text="↑", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    up_button = tk.Button(root, bd=0, text="↑", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
     up_button.configure(command=task_list.move_up)
     up_button.place(relx=0.7875, rely=0.1675, anchor="nw")
-    down_button = tk.Button(root, text="↓", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    down_button = tk.Button(root, bd=0, text="↓", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
     down_button.configure(command=task_list.move_down)
     down_button.place(relx=0.7875, rely=0.9875, anchor="sw")
 

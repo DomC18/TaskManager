@@ -34,6 +34,7 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
             data = json.load(file)
     except FileNotFoundError:
         register_new(root, first_entry, user_entry, password_entry, task_func)
+        return
         
     username = data[name]["username"]
     password = data[name]["password"]

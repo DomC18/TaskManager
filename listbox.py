@@ -6,9 +6,9 @@ import constants
 import taskutil
 
 class Listbox(tk.Frame):
-    def __init__(self, master=None, root=tk.Tk, width=0, height=0, **kwargs) -> None:
+    def __init__(self, master=None, root=tk.Tk, width=0, height=0, bg="white", **kwargs) -> None:
         super().__init__(master, **kwargs)
-        self.canvas = tk.Canvas(self, width=width, height=height)
+        self.canvas = tk.Canvas(self, width=width, height=height, bg=bg)
         self.list_frame = tk.Frame(self.canvas)
         self.bg_color = self.rgb_to_hex((240, 240, 240))
         self.root = root
@@ -78,11 +78,11 @@ class Listbox(tk.Frame):
         return '#{:02x}{:02x}{:02x}'.format(*rgb)
 
     def insert(self, idx:int, task:taskutil.Task) -> None:
-        y_multiplier = 0.01 + (idx*0.13)
-        y_multiplier2 = 0.075 + (idx*0.13)
+        y_multiplier = 0.015 + (idx*0.13)
+        y_multiplier2 = 0.0785 + (idx*0.13)
         
         name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 33))
-        name_label.place(relx=0, rely=y_multiplier, anchor="nw")
+        name_label.place(relx=0.01, rely=y_multiplier, anchor="nw")
         
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
         self.button_images.update({edit_button:self.edit_icon})
@@ -272,19 +272,19 @@ class Listbox(tk.Frame):
         self.back_button.configure(command=lambda n=name : self.back_from_edit(n))
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
-        self.old_name = tk.Label(self.root, text=name[:17], bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_name = tk.Label(self.root, text=name[:17], bg="black", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_name.place(relx=0.25, rely=1/6, anchor="w")
-        self.old_desc = tk.Label(self.root, text=taskutil.find_task(name).description, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_desc = tk.Label(self.root, text=taskutil.find_task(name).description, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
-        self.old_dead = tk.Label(self.root, text=((taskutil.find_task(name).deadline + "*") if (taskutil.find_task(name).deadline == "00/00/0000") else (taskutil.find_task(name).deadline)), bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_dead = tk.Label(self.root, text=((taskutil.find_task(name).deadline + "*") if (taskutil.find_task(name).deadline == "00/00/0000") else (taskutil.find_task(name).deadline)), bg="black", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_dead.place(relx=0.25, rely=3/6, anchor="w")
-        self.old_status = tk.Label(self.root, text=taskutil.find_task(name).status, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_status = tk.Label(self.root, text=taskutil.find_task(name).status, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_status.place(relx=0.25, rely=4/6, anchor="w")
-        self.old_importance = tk.Label(self.root, text=taskutil.find_task(name).importance, bg="grey", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_importance = tk.Label(self.root, text=taskutil.find_task(name).importance, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
         self.old_importance.place(relx=0.25, rely=5/6, anchor="w")
-        self.name_entry = tk.Entry(self.root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.name_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 40, "bold"), width=10)
         self.name_entry.place(relx=0.95, rely=1/6, anchor="e")
-        self.desc_entry = tk.Entry(self.root, bg="grey", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.desc_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 40, "bold"), width=10)
         self.desc_entry.place(relx=0.95, rely=2/6, anchor="e")
         self.status_entry = tk.OptionMenu(self.root, self.status_var, "Not Started", "Delayed", "Underway", "Almost Completed", "Finished")
         self.status_entry.place(relx=0.95, rely=4/6, anchor="e")
@@ -292,9 +292,9 @@ class Listbox(tk.Frame):
         self.importance_entry.place(relx=0.95, rely=5/6, anchor="e")
 
         self.year_entry = tk.OptionMenu(self.root, self.year_var, self.valid_years[0], self.valid_years[1], self.valid_years[2], self.valid_years[3], self.valid_years[4], self.valid_years[5], self.valid_years[6], self.valid_years[7], self.valid_years[8], self.valid_years[9])
-        self.year_entry.place(relx=0.9425, rely=3/6, anchor="e")
+        self.year_entry.place(relx=0.95, rely=3/6, anchor="e")
         self.month_entry = tk.OptionMenu(self.root, self.month_var, "January:01", "February:02", "March:03", "April:04", "May:05", "June:06", "July:07", "August:08", "September:09", "October:10", "November:11", "December:12")
-        self.month_entry.place(relx=0.675, rely=3/6, anchor="w")
+        self.month_entry.place(relx=0.6675, rely=3/6, anchor="w")
         self.day_entry = tk.OptionMenu(self.root, self.day_var, "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31")
         self.day_entry.place(relx=((0.9425+0.675)/2), rely=3/6, anchor="center")
 
@@ -302,7 +302,7 @@ class Listbox(tk.Frame):
         self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, se, ie))
         self.edit_large.place(relx=0.125, rely=0.4, anchor="center")
         self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 35, "bold"), bg="white", fg="black")
-        self.edit_label.place(relx=0.125, rely=0.6, anchor="center")
+        self.edit_label.place(relx=0.125, rely=0.575, anchor="center")
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
         if not taskutil.edit_task(name, name_entry, desc_entry, self.month_var, self.day_var, self.year_var, status_entry, importance_entry):

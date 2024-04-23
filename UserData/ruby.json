@@ -1,0 +1,22 @@
+{
+    "ruby": {
+        "username": "ruby",
+        "password": "ruby"
+    },
+    "tasks": [
+        {
+            "name": "rizzy",
+            "description": "description",
+            "deadline": "07/02/2025",
+            "status": "Not Started",
+            "importance": "Minimal"
+        },
+        {
+            "name": "nuclear",
+            "description": "description",
+            "deadline": "05/01/2024",
+            "status": "Almost Completed",
+            "importance": "Trivial"
+        }
+    ]
+}

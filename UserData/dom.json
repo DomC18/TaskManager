@@ -8,7 +8,7 @@
             "name": "tamu stuff",
             "description": "tamu",
             "deadline": "06/01/2024",
-            "status": "Delayed",
+            "status": "Underway",
             "importance": "Critical"
         },
         {
@@ -19,53 +19,11 @@
             "importance": "Significant"
         },
         {
-            "name": "teetee",
-            "description": "description",
-            "deadline": "11/07/2024",
-            "status": "Delayed",
-            "importance": "Average"
-        },
-        {
             "name": "cim proj",
             "description": "cim",
             "deadline": "06/01/2024",
             "status": "Underway",
             "importance": "Average"
-        },
-        {
-            "name": "poopies",
-            "description": "description",
-            "deadline": "05/02/2025",
-            "status": "Underway",
-            "importance": "Average"
-        },
-        {
-            "name": "teetime",
-            "description": "description",
-            "deadline": "07/02/2024",
-            "status": "Delayed",
-            "importance": "Trivial"
-        },
-        {
-            "name": "po",
-            "description": "description",
-            "deadline": "04/30/2024",
-            "status": "Underway",
-            "importance": "Trivial"
-        },
-        {
-            "name": "t",
-            "description": "description",
-            "deadline": "09/02/2024",
-            "status": "Delayed",
-            "importance": "Minimal"
-        },
-        {
-            "name": "bass",
-            "description": "description",
-            "deadline": "06/16/2024",
-            "status": "Underway",
-            "importance": "Minimal"
         }
     ]
 }
