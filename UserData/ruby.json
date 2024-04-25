@@ -5,18 +5,11 @@
     },
     "tasks": [
         {
-            "name": "rizzy",
+            "name": "newtask",
             "description": "description",
-            "deadline": "07/02/2025",
+            "deadline": "04/24/2024",
             "status": "Not Started",
             "importance": "Minimal"
-        },
-        {
-            "name": "nuclear",
-            "description": "description",
-            "deadline": "05/01/2024",
-            "status": "Almost Completed",
-            "importance": "Trivial"
         }
     ]
 }

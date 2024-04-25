@@ -7,26 +7,26 @@ import json
 import os
 
 def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar) -> bool:
-    task = globalvar.user_tasks.index(find_task(task_name))
-    if month.get() == "" and (globalvar.user_tasks[task].deadline[0:2] == "00"):
+    task_index = globalvar.user_tasks.index(find_task(task_name))
+    if month.get() == "" and (globalvar.user_tasks[task_index].deadline[0:2] == globalvar.curr_date[0:2]):
         return False
-    if day.get() == "" and (globalvar.user_tasks[task].deadline[3:5] == "00"):
+    if day.get() == "" and (globalvar.user_tasks[task_index].deadline[3:5] == globalvar.curr_date[3:5]):
         return False
-    if year.get() == "" and (globalvar.user_tasks[task].deadline[6:10] == "0000"):
+    if year.get() == "" and (globalvar.user_tasks[task_index].deadline[6:10] == globalvar.curr_date[-4:]):
         return False
     return True
 
 def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
-    task = globalvar.user_tasks.index(find_task(task_name))
     new_date = ""
+    task_index = globalvar.user_tasks.index(find_task(task_name))
     if name_entry.get() != "":
-        globalvar.user_tasks[task].name = name_entry.get()
+        globalvar.user_tasks[task_index].name = name_entry.get()
     if description_entry.get() != "":
-        globalvar.user_tasks[task].description = description_entry.get()
+        globalvar.user_tasks[task_index].description = description_entry.get()
     if status.get() != "":
-        globalvar.user_tasks[task].status = status.get()
+        globalvar.user_tasks[task_index].status = status.get()
     if importance.get() != "":
-        globalvar.user_tasks[task].importance = importance.get()
+        globalvar.user_tasks[task_index].importance = importance.get()
 
     if month.get() != "":
         new_date = month.get()[-2:]
@@ -36,13 +36,13 @@ def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, mo
             if year.get() != "":
                 new_date += "/"
                 new_date += year.get()
-                globalvar.user_tasks[task].deadline = new_date
+                globalvar.user_tasks[task_index].deadline = new_date
                 return True
             else:
                 return False
         else:
             return False
-    elif (globalvar.user_tasks[task].deadline[0:2] != "00") and (globalvar.user_tasks[task].deadline[3:5] != "00") and (globalvar.user_tasks[task].deadline[6:10] != "0000"):
+    elif (globalvar.user_tasks[task_index].deadline[0:2] != globalvar.curr_date[0:2]) and (globalvar.user_tasks[task_index].deadline[3:5] != globalvar.curr_date[3:5]) and (globalvar.user_tasks[task_index].deadline[6:10] != globalvar.curr_date[-4:]):
         return True
     else:
         return False
