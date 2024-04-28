@@ -1,5 +1,5 @@
 from listbox import Listbox
-from loginutil import register_new, verify_existing
+from loginutil import verify_existing
 import tkinter as tk
 import globalvar
 import constants

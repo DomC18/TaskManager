@@ -1,3 +1,496 @@
+constants.py:
+import os
+
+TASKMANAGERDIR = os.path.realpath(__file__)[:-12]
+USERDATADIR = TASKMANAGERDIR + "UserData\\"
+ICONDIR = TASKMANAGERDIR + "Icons\\"
+ADDFILE = ICONDIR + "add.png"
+DELETEFILE = ICONDIR + "delete.png"
+EDITFILE = ICONDIR + "edit.png"
+EDITLARGEFILE = ICONDIR + "editlarge.png"
+FILTERFILE = ICONDIR + "filter.png"
+FILTERLARGEFILE = ICONDIR + "filterlarge.png"
+INFOFILE = ICONDIR + "info.png"
+PROFILEFILE = ICONDIR + "profile.png"
+SAVEFILE = ICONDIR + "save.png"
+
+
+
+
+
+globalvar.py:
+from Task import Task
+
+name = ""
+username = ""
+password = ""
+curr_date = Task().date_list_to_string(Task().get_current_date())
+
+user_tasks = []
+
+
+
+
+Task.py:
+import time
+
+class Task:
+    date_added:str
+    time_added:str
+
+    name:str
+    description:str
+    deadline:str
+    status:str
+    importance:str
+    
+    elements:list = []
+
+    days_completed_keycodes = {
+        1:0,
+        2:31,
+        3:(31+29 if time.localtime()[0] % 4 == 0 else 31+28),
+        4:(31+29+31 if time.localtime()[0] % 4 == 0 else 31+28+31),
+        5:(31+29+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30),
+        6:(31+29+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31),
+        7:(31+29+31+30+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30),
+        8:(31+29+31+30+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31),
+        9:(31+29+31+30+31+30+31+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31),
+        10:(31+29+31+30+31+30+31+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30),
+        11:(31+29+31+30+31+30+31+31+30+31 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30+31),
+        12:(31+29+31+30+31+30+31+31+30+31+30 if time.localtime()[0] % 4 == 0 else 31+28+31+30+31+30+31+31+30+31+30)
+    }
+
+    status_keycodes = {
+        "Not Started": ["NS", (0, 0, 0), "white", 0],
+        "Delayed": ["D", (128, 0, 0), "black", 1],
+        "Underway": ["U", (237, 41, 57), "black", 2],
+        "Almost Completed": ["AC", (152, 251, 152), "black", 3],
+        "Finished": ["F", (199, 234, 70), "black", 4]
+    }
+
+    importance_keycodes = {
+        "Minimal": ["M", (199, 234, 70), "black", 4],
+        "Trivial": ["T", (152, 251, 152), "black", 3],
+        "Average": ["A", (237, 41, 57), "black", 2],
+        "Significant": ["S", (128, 0, 0), "black", 1],
+        "Critical": ["C", (0, 0, 0), "white", 0]
+    }
+    
+    def get_current_date(self) -> list:
+        localtime = time.localtime()
+        current_date = [localtime[1], localtime[2], localtime[0]]
+        return current_date
+    
+    def date_list_to_string(self, date_list:list) -> str:
+        new_month:str = ""
+
+        if date_list[0] < 10:
+            new_month = "0" + str(date_list[0])
+        
+        return new_month + "/" + str(date_list[1]) + "/" + str(date_list[2])
+
+    def __init__(self, name:str="newtask", description:str="description", deadline:str="00/00/0000", status:str="Not Started", importance:str="Minimal") -> None:
+        self.name = name
+        self.description = description
+        self.status = status
+        self.importance = importance
+
+        if deadline == "00/00/0000":
+            self.deadline = self.date_list_to_string(self.get_current_date())
+        else:
+            self.deadline = deadline
+        
+        self.elements = [self.name, self.description, self.deadline, self.status, self.importance]
+
+    def get_date_differential(self) -> int:
+        curr_date = self.get_current_date()
+        curr_month = curr_date[0]
+        curr_day = curr_date[1]
+        curr_year = curr_date[2]
+        task_date = self.get_task_date()
+        task_month = task_date[0]
+        task_day = task_date[1]
+        task_year = task_date[2]
+        return (task_year*365-curr_year*365) + \
+               (self.days_completed_keycodes[task_month]-self.days_completed_keycodes[curr_month]) + \
+               (task_day - curr_day)
+    
+    def get_task_date(self) -> list:
+        task_date = [int(self.deadline[0:2]), int(self.deadline[3:5]), int(self.deadline[6:10])]
+        return task_date
+
+    def get_status_short(self) -> str:
+        return self.status_keycodes[self.status][0]
+
+    def get_importance_short(self) -> str:
+        return self.importance_keycodes[self.importance][0]
+
+    def get_status_color(self) -> tuple:
+        return self.status_keycodes[self.status][1]
+
+    def get_importance_color(self) -> tuple:
+        return self.importance_keycodes[self.importance][1]
+
+    def get_status_font(self) -> str:
+        return self.status_keycodes[self.status][2]
+
+    def get_importance_font(self) -> str:
+        return self.importance_keycodes[self.importance][2]
+
+    def get_status_sort(self) -> int:
+        return self.status_keycodes[self.status][3]
+
+    def get_importance_sort(self) -> int:
+        return self.importance_keycodes[self.importance][3]
+    
+    def __eq__(self, other) -> bool:
+        return self.elements == other.elements
+
+    def __repr__(self) -> str:
+        return "{Name: " + self.name + ", Description: " + self.description + ", Date to Finish: " + self.deadline + ", Status: " + str(self.status) + ", Importance: " + str(self.importance) + "}"
+    
+    def __str__(self) -> str:
+        return "{Name: " + self.name + ", Description: " + self.description + ", Date to Finish: " + self.deadline + ", Status: " + str(self.status) + ", Importance: " + str(self.importance) + "}"
+    
+    def return_as_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "deadline": self.deadline,
+            "status": self.status,
+            "importance": self.importance
+        }
+
+
+
+
+loginutil.py:
+import tkinter as tk
+import constants
+import globalvar
+import json
+import taskutil
+
+def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label, task_func) -> None:
+    data:dict = {}
+    name = first_entry.get()
+
+    name_invalid = first_entry.get() == ""
+    username_invalid = user_entry.get() == ""
+    password_invalid = password_entry.get() == ""
+
+    if (name_invalid or username_invalid or password_invalid):
+        if name_invalid:
+            first_label.configure(fg="red")
+        else: 
+            first_label.configure(fg="black")
+
+        if username_invalid:
+            user_label.configure(fg="red")
+        else: 
+            user_label.configure(fg="black")
+
+        if password_invalid:
+            password_label.configure(fg="red")
+        else: 
+            password_label.configure(fg="black")
+    
+    file_dir = constants.USERDATADIR + name + ".json"
+    try:
+        with open(file_dir, "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        register_new(root, first_entry, user_entry, password_entry, task_func)
+        return
+        
+    username = data[name]["username"]
+    password = data[name]["password"]
+
+    globalvar.name = name
+    globalvar.username = username
+    globalvar.password = password
+
+    if username == user_entry.get() and password == password_entry.get():
+        root.destroy()
+        taskutil.load_tasks()
+        task_func()
+
+def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, task_func) -> None:
+    name = first_entry.get()
+
+    if name == "":
+        return
+
+    username = user_entry.get()
+    password = password_entry.get()
+
+    file_dir = constants.USERDATADIR + name + ".json"
+
+    user_data = {
+        name: {
+            "username": username,
+            "password": password
+        },
+        "tasks": [
+            
+        ]
+    }
+
+    globalvar.name = name
+    globalvar.username = username
+    globalvar.password = password
+
+    with open(file_dir, "w") as file:
+        json.dump(user_data, file, indent=4)
+
+    root.destroy()
+    task_func()
+
+
+
+
+ui.py:
+from listbox import Listbox
+from loginutil import verify_existing
+import tkinter as tk
+import globalvar
+import constants
+import taskutil
+
+task_list : Listbox
+root : tk.Tk
+
+def init() -> None:
+    global root
+
+    globalvar.user_tasks = []
+
+    root = tk.Tk()
+    root.config(bg="grey")
+    root.title("Login")
+    root.geometry("600x400+480+270")
+    root.resizable(False, False)
+
+    logo_label = tk.Label(root, text="TaskManager Login", font=("Arial", 40), bg="#f0f0f0", justify="center")
+    logo_label.grid(row=0, column=0, columnspan=2, pady=20)
+
+    firstname_label = tk.Label(root, text="*First Name:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    firstname_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+
+    firstname_entry = tk.Entry(root, font=("Arial", 25), justify="left")
+    firstname_entry.grid(row=1, column=1, padx=10, pady=5)
+
+    username_label = tk.Label(root, text="*Username:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    username_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+
+    username_entry = tk.Entry(root, font=("Arial", 25), justify="left")
+    username_entry.grid(row=2, column=1, padx=10, pady=5)
+
+    password_label = tk.Label(root, text="*Password:", font=("Arial", 25), bg="#f0f0f0", justify="center")
+    password_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+
+    password_entry = tk.Entry(root, show="*", font=("Arial", 25), justify="left")
+    password_entry.grid(row=3, column=1, padx=10, pady=5)
+
+    login_button = tk.Button(root, text="Login/Register", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label, func=init_task_interface : verify_existing(r,f,u,p,fl,ul,pl,func))
+    login_button.grid(row=4, column=0, columnspan=2, pady=20)
+
+    root.mainloop()
+
+
+def init_task_interface() -> None:
+    global task_list
+    global root
+
+    root = tk.Tk()
+    root.config(bg="white")
+    root.title("TaskManager")
+    root.geometry("960x540+333+135")
+    root.resizable(False, False)
+
+    util_frame = tk.Frame(root, bg="white")
+    util_frame.place(relx=0, rely=0, anchor="nw")
+    profile_frame = tk.Frame(root, bg="white")
+    profile_frame.place(relx=1, rely=0, anchor="ne")
+    task_frame = tk.Frame(root)
+    task_frame.place(relx=0.5, rely=1, anchor="s")
+
+    task_list = Listbox(task_frame, root, 550, 450, "grey")
+    task_list.list_index = 0
+    for idx, task in enumerate(globalvar.user_tasks):
+        if idx < task_list.list_index:
+            continue
+        if idx > task_list.list_index + 6:
+            break
+        task_list.insert(idx-task_list.list_index, task)
+    task_list.pack()
+
+    save_icon = tk.PhotoImage(file=constants.SAVEFILE)
+    save_button = tk.Button(util_frame, image=save_icon, bd=0, bg="white", command=taskutil.save_tasks)
+    save_button.grid(row=0, column=0)
+    save_label = tk.Label(util_frame, text="Save", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
+    save_label.grid(row=0,column=1)
+    filter_icon = tk.PhotoImage(file=constants.FILTERFILE)
+    filter_button = tk.Button(util_frame, image=filter_icon, bd=0, bg="white")
+    filter_button.configure(command=task_list.filter_interface)
+    filter_button.grid(row=1, column=0)
+    filter_label = tk.Label(util_frame, text="Filter", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
+    filter_label.grid(row=1, column=1)
+
+    profile_label = tk.Label(profile_frame, text="Log Out", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
+    profile_label.grid(row=0, column=0)
+    profile_icon = tk.PhotoImage(file=constants.PROFILEFILE)
+    profile_button = tk.Button(profile_frame, image=profile_icon, bd=0, bg="white", command=lambda r=root, i=init : taskutil.sign_out(r, i))
+    profile_button.grid(row=0, column=1)
+
+    up_button = tk.Button(root, bd=0, text="↑", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    up_button.configure(command=task_list.move_up)
+    up_button.place(relx=0.7875, rely=0.1675, anchor="nw")
+    down_button = tk.Button(root, bd=0, text="↓", bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+    down_button.configure(command=task_list.move_down)
+    down_button.place(relx=0.7875, rely=0.9875, anchor="sw")
+
+    add_icon = tk.PhotoImage(file=constants.ADDFILE)
+    add_button = tk.Button(root, image=add_icon, bg="white", bd=0)
+    add_button.configure(command=task_list.add_task)
+    add_button.place(relx=0.1, rely=0.5, anchor="center")
+    add_label = tk.Label(root, text="Add Task", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
+    add_label.place(relx=0.1, rely=0.6, anchor="center")
+    
+    root.mainloop()
+
+
+
+
+taskutil.py:
+from Task import Task
+import tkinter as tk
+import globalvar
+import constants
+import time
+import json
+import os
+
+def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar) -> bool:
+    task_index = globalvar.user_tasks.index(find_task(task_name))
+    if month.get() == "" and (globalvar.user_tasks[task_index].deadline[0:2] == globalvar.curr_date[0:2]):
+        return False
+    if day.get() == "" and (globalvar.user_tasks[task_index].deadline[3:5] == globalvar.curr_date[3:5]):
+        return False
+    if year.get() == "" and (globalvar.user_tasks[task_index].deadline[6:10] == globalvar.curr_date[-4:]):
+        return False
+    return True
+
+def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
+    new_date = ""
+    task_index = globalvar.user_tasks.index(find_task(task_name))
+    if description_entry.get() != "":
+        globalvar.user_tasks[task_index].description = description_entry.get()
+    if status.get() != "":
+        globalvar.user_tasks[task_index].status = status.get()
+    if importance.get() != "":
+        globalvar.user_tasks[task_index].importance = importance.get()
+
+    if month.get() != "" and day.get() != "" and year.get() != "":
+        new_date = month.get()[-2:] + "/" + day.get() + "/" + year.get()
+        if name_entry.get() != "":
+            globalvar.user_tasks[task_index].name = name_entry.get()
+            new_index = globalvar.user_tasks.index(find_task(name_entry.get()))
+            globalvar.user_tasks[new_index].deadline = new_date
+        else:
+            globalvar.user_tasks[task_index].deadline = new_date
+        return True
+    elif month.get() == "" and day.get() == "" and year.get() == "":
+        if name_entry.get() != "":
+            globalvar.user_tasks[task_index].name = name_entry.get()
+        return True
+    return False
+        
+def amount_task(task_name:str) -> int:
+    task_num = 0
+    for task in globalvar.user_tasks:
+        if task.name == task_name:
+            task_num += 1
+    return task_num
+
+def find_task(task_name:str) -> Task:
+    for task in globalvar.user_tasks:
+        print(f"Task: {task}")
+        print(f"Task Name: {task.name}")
+        if task.name == task_name:
+            return task
+    return None
+
+def load_tasks() -> None:
+    data:dict = {}
+    file_dir = rf"{constants.USERDATADIR+globalvar.name}.json"
+
+    try:
+        with open(file_dir, "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        return
+    
+    for idx in range(len(data["tasks"])):
+        globalvar.user_tasks.append(Task(data["tasks"][idx]["name"], 
+                               data["tasks"][idx]["description"], 
+                               data["tasks"][idx]["deadline"], 
+                               data["tasks"][idx]["status"],
+                               data["tasks"][idx]["importance"]
+                            ))
+
+def save_tasks() -> None:
+    data:dict = {}
+    file_dir = rf"{constants.USERDATADIR+globalvar.name}.json"
+
+    data = {
+        globalvar.name: {
+            "username": globalvar.username,
+            "password": globalvar.password
+        }
+    }
+    task_data = {"tasks": []}
+    for task in globalvar.user_tasks:
+        task_data["tasks"].append(task.return_as_dict())
+    data.update(task_data)
+
+    try:
+        os.remove(file_dir)
+    except FileNotFoundError:
+        return
+    
+    with open(file_dir, "w") as file:
+        json.dump(data, file, indent=4)
+
+def sign_out(root:tk.Tk, init_func) -> None:
+    save_tasks()
+    root.destroy()
+    init_func()
+
+def name_sort() -> None:
+    globalvar.user_tasks.sort(key=lambda task : task.name)
+
+def deadline_sort() -> None:
+    globalvar.user_tasks.sort(key=lambda task : task.get_date_differential())
+
+def status_sort() -> None:
+    globalvar.user_tasks.sort(key=lambda task : task.get_status_sort())
+
+def importance_sort() -> None:
+    globalvar.user_tasks.sort(key=lambda task : task.get_importance_sort())
+
+def get_valid_years() -> list:
+    valid_years = []
+    current_year_raw = time.localtime()[0]
+    for i in range(10):
+        valid_years.append(str(current_year_raw+i))
+    return valid_years
+
+
+
+
+listbox.py:
 from PIL import ImageTk, ImageFilter, Image, ImageGrab
 from Task import Task
 import tkinter as tk
@@ -376,3 +869,15 @@ class Listbox(tk.Frame):
                 break
             self.insert(idx-self.list_index, task)
         self.pack()
+
+
+
+
+main.py:
+import ui
+
+def main() -> None:
+    ui.init()
+
+if __name__ == "__main__":
+    main()

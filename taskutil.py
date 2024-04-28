@@ -19,8 +19,6 @@ def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.Str
 def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
     new_date = ""
     task_index = globalvar.user_tasks.index(find_task(task_name))
-    if name_entry.get() != "":
-        globalvar.user_tasks[task_index].name = name_entry.get()
     if description_entry.get() != "":
         globalvar.user_tasks[task_index].description = description_entry.get()
     if status.get() != "":
@@ -28,24 +26,20 @@ def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, mo
     if importance.get() != "":
         globalvar.user_tasks[task_index].importance = importance.get()
 
-    if month.get() != "":
-        new_date = month.get()[-2:]
-        if day.get() != "":
-            new_date += "/"
-            new_date += day.get()
-            if year.get() != "":
-                new_date += "/"
-                new_date += year.get()
-                globalvar.user_tasks[task_index].deadline = new_date
-                return True
-            else:
-                return False
+    if month.get() != "" and day.get() != "" and year.get() != "":
+        new_date = month.get()[-2:] + "/" + day.get() + "/" + year.get()
+        if name_entry.get() != "":
+            globalvar.user_tasks[task_index].name = name_entry.get()
+            new_index = globalvar.user_tasks.index(find_task(name_entry.get()))
+            globalvar.user_tasks[new_index].deadline = new_date
         else:
-            return False
-    elif (globalvar.user_tasks[task_index].deadline[0:2] != globalvar.curr_date[0:2]) and (globalvar.user_tasks[task_index].deadline[3:5] != globalvar.curr_date[3:5]) and (globalvar.user_tasks[task_index].deadline[6:10] != globalvar.curr_date[-4:]):
+            globalvar.user_tasks[task_index].deadline = new_date
         return True
-    else:
-        return False
+    elif month.get() == "" and day.get() == "" and year.get() == "":
+        if name_entry.get() != "":
+            globalvar.user_tasks[task_index].name = name_entry.get()
+        return True
+    return False
         
 def amount_task(task_name:str) -> int:
     task_num = 0
@@ -56,6 +50,8 @@ def amount_task(task_name:str) -> int:
 
 def find_task(task_name:str) -> Task:
     for task in globalvar.user_tasks:
+        print(f"Task: {task}")
+        print(f"Task Name: {task.name}")
         if task.name == task_name:
             return task
     return None
