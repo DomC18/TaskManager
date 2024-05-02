@@ -416,8 +416,6 @@ def amount_task(task_name:str) -> int:
 
 def find_task(task_name:str) -> Task:
     for task in globalvar.user_tasks:
-        print(f"Task: {task}")
-        print(f"Task Name: {task.name}")
         if task.name == task_name:
             return task
     return None
