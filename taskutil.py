@@ -1,12 +1,12 @@
 from Task import Task
-import tkinter as tk
+import customtkinter as tk
 import globalvar
 import constants
 import time
 import json
 import os
 
-def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar) -> bool:
+def should_back(task_name:str, month:tk.Variable, day:tk.Variable, year:tk.Variable) -> bool:
     task_index = globalvar.user_tasks.index(find_task(task_name))
     if month.get() == "" and (globalvar.user_tasks[task_index].deadline[0:2] == globalvar.curr_date[0:2]):
         return False
@@ -16,7 +16,7 @@ def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.Str
         return False
     return True
 
-def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
+def edit_task(task_name:str, name_entry:tk.CTkEntry, description_entry:tk.CTkEntry, month:tk.Variable, day:tk.Variable, year:tk.Variable, status:tk.Variable, importance:tk.Variable) -> bool:
     new_date = ""
     task_index = globalvar.user_tasks.index(find_task(task_name))
     if description_entry.get() != "":
@@ -95,7 +95,7 @@ def save_tasks() -> None:
     with open(file_dir, "w") as file:
         json.dump(data, file, indent=4)
 
-def sign_out(root:tk.Tk, init_func) -> None:
+def sign_out(root:tk.CTk, init_func) -> None:
     save_tasks()
     root.destroy()
     init_func()

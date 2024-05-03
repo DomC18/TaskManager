@@ -1,10 +1,10 @@
-import tkinter as tk
+import customtkinter as tk
 import constants
 import globalvar
 import json
 import taskutil
 
-def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, first_label:tk.Label, user_label:tk.Label, password_label:tk.Label, task_func) -> None:
+def verify_existing(root:tk.CTk, first_entry:tk.CTkEntry, user_entry:tk.CTkEntry, password_entry:tk.CTkEntry, first_label:tk.CTkLabel, user_label:tk.CTkLabel, password_label:tk.CTkLabel, task_func) -> None:
     data:dict = {}
     name = first_entry.get()
 
@@ -14,19 +14,19 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
 
     if (name_invalid or username_invalid or password_invalid):
         if name_invalid:
-            first_label.configure(fg="red")
+            first_label.configure(fg_color="red")
         else: 
-            first_label.configure(fg="black")
+            first_label.configure(fg_color="black")
 
         if username_invalid:
-            user_label.configure(fg="red")
+            user_label.configure(fg_color="red")
         else: 
-            user_label.configure(fg="black")
+            user_label.configure(fg_color="black")
 
         if password_invalid:
-            password_label.configure(fg="red")
+            password_label.configure(fg_color="red")
         else: 
-            password_label.configure(fg="black")
+            password_label.configure(fg_color="black")
     
     file_dir = constants.USERDATADIR + name + ".json"
     try:
@@ -48,7 +48,7 @@ def verify_existing(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, passw
         taskutil.load_tasks()
         task_func()
 
-def register_new(root:tk.Tk, first_entry:tk.Entry, user_entry:tk.Entry, password_entry:tk.Entry, task_func) -> None:
+def register_new(root:tk.CTk, first_entry:tk.CTkEntry, user_entry:tk.CTkEntry, password_entry:tk.CTkEntry, task_func) -> None:
     name = first_entry.get()
 
     if name == "":
