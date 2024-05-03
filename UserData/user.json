@@ -5,18 +5,25 @@
     },
     "tasks": [
         {
-            "name": "college registration",
-            "description": "description",
-            "deadline": "05/10/2024",
-            "status": "Delayed",
-            "importance": "Significant"
-        },
-        {
             "name": "art project",
             "description": "description",
             "deadline": "05/01/2024",
             "status": "Underway",
             "importance": "Trivial"
+        },
+        {
+            "name": "calendar option",
+            "description": "description",
+            "deadline": "05/10/2024",
+            "status": "Underway",
+            "importance": "Trivial"
+        },
+        {
+            "name": "college registration",
+            "description": "description",
+            "deadline": "05/10/2024",
+            "status": "Delayed",
+            "importance": "Significant"
         }
     ]
 }

@@ -1,3 +1,4 @@
+from cal import Calendar
 from listbox import Listbox
 from loginutil import verify_existing
 import tkinter as tk
@@ -5,6 +6,7 @@ import globalvar
 import constants
 import taskutil
 
+calendar : Calendar
 task_list : Listbox
 root : tk.Tk
 
@@ -47,8 +49,7 @@ def init() -> None:
 
 
 def init_task_interface() -> None:
-    global task_list
-    global root
+    global task_list, root, calendar
 
     root = tk.Tk()
     root.config(bg="white")
@@ -105,4 +106,18 @@ def init_task_interface() -> None:
     add_label = tk.Label(root, text="Add Task", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
     add_label.place(relx=0.1, rely=0.6, anchor="center")
     
+    globalvar.add_button = add_button
+    globalvar.add_label = add_label
+    globalvar.up_button = up_button
+    globalvar.down_button = down_button
+    calendar = Calendar(root, 960, 540, "white")
+    calendar_icon = tk.PhotoImage(file=constants.CALENDARFILE)
+    calendar_button = tk.Button(util_frame, image=calendar_icon, bd=0, bg="white")
+    calendar_button.configure(command=lambda a=add_button, al=add_label, u=up_button, d=down_button : calendar.toggle_show(a,al,u,d))
+    calendar_button.grid(row=2, column=0)
+    calendar_label = tk.Label(util_frame, text="Calendar", justify="center", font=("Times New Roman", 30), bg="white", fg="black")
+    calendar_label.grid(row=2, column=1)
+
+    globalvar.cal = calendar
+
     root.mainloop()

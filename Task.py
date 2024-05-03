@@ -45,7 +45,7 @@ class Task:
     
     def get_current_date(self) -> list:
         localtime = time.localtime()
-        current_date = [localtime[1], localtime[2], localtime[0]]
+        current_date = [localtime[1], (localtime[2] if len(str(localtime[2])) == 2 else ("0" + str(localtime[2]))), localtime[0]]
         return current_date
     
     def date_list_to_string(self, date_list:list) -> str:
@@ -72,7 +72,7 @@ class Task:
     def get_date_differential(self) -> int:
         curr_date = self.get_current_date()
         curr_month = curr_date[0]
-        curr_day = curr_date[1]
+        curr_day = int(curr_date[1])
         curr_year = curr_date[2]
         task_date = self.get_task_date()
         task_month = task_date[0]
