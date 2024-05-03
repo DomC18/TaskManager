@@ -37,8 +37,8 @@ class Calendar():
         self.group_select = tk.StringVar()
         self.group_select.set("Month")
         self.group_label = tk.Label(self.cal_frame, bg="red", fg="black", font=("Times New Roman", 30, "bold"), textvariable=self.group_var)
-        self.group_select = tk.OptionMenu(self.cal_frame, self.group_select, "Day", "Week", "Month")
-        self.group_select.configure(bg="white", fg="black", font=("Times New Roman", 30, "bold"))
+        self.group_option = tk.OptionMenu(self.cal_frame, self.group_select, "Day", "Week", "Month")
+        self.group_option.configure(bg="white", fg="black", font=("Times New Roman", 30, "bold"))
 
     def get_current_month(self) -> str:
         return self.month_keycodes[str(self.get_current_date()[0])]
@@ -52,11 +52,11 @@ class Calendar():
         return str(date_list[0]) + "/" + str(date_list[1]) + "/" + str(date_list[2])
 
     def get_group_label(self) -> str:
-        if self.group_select == "Day":
+        if self.group_select.get() == "Day":
             ...
-        elif self.group_select == "Week":
+        elif self.group_select.get() == "Week":
             ...
-        elif self.group_select == "Month":
+        elif self.group_select.get() == "Month":
             ...
 
     def next(self) -> None:
@@ -82,9 +82,10 @@ class Calendar():
             down_button.place_forget()
             self.cal_frame.place(relx=0.5, rely=0.5, anchor="center")
 
+            self.group_select.set("Month")
             self.show_button.place(relx=0, rely=0, anchor="nw")
             self.group_label.place(relx=0.5, rely=0, anchor="n")
-            self.group_select.place(relx=1, rely=0, anchor="ne")
+            self.group_option.place(relx=1, rely=0, anchor="ne")
         else:
             self.cal_frame.place_forget()
 
