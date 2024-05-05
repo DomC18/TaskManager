@@ -19,8 +19,8 @@ class Listbox(tk.Frame):
         self.list_index:int
 
         self.edit_large_icon = tk.PhotoImage(file=constants.EDITLARGEFILE)
-        self.edit_icon = tk.PhotoImage(file=constants.EDITFILE)
-        self.delete_icon = tk.PhotoImage(file=constants.DELETEFILE)
+        self.edit_icon = tk.PhotoImage(file=constants.EDITMEDIUMFILE)
+        self.delete_icon = tk.PhotoImage(file=constants.DELETEMEDIUMFILE)
         self.filter_large_icon = tk.PhotoImage(file=constants.FILTERLARGEFILE)
 
         self.button_images : dict = {}
@@ -81,7 +81,7 @@ class Listbox(tk.Frame):
         y_multiplier = 0.015 + (idx*0.13)
         y_multiplier2 = 0.0785 + (idx*0.13)
         
-        name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 33))
+        name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 49))
         name_label.place(relx=0.01, rely=y_multiplier, anchor="nw")
         
         edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
@@ -96,9 +96,9 @@ class Listbox(tk.Frame):
         delete_button.configure(image=self.button_images[delete_button])
         delete_button.place(relx=0.975, rely=y_multiplier, anchor="ne")
 
-        status_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_status_color()), text=task.get_status_short(), font=("Times New Roman", 40, "bold"), fg=task.get_status_font())
+        status_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_status_color()), text=task.get_status_short(), font=("Times New Roman", 60, "bold"), fg=task.get_status_font())
         status_indicator.place(relx=0.575, rely=y_multiplier2, anchor="center")
-        importance_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_importance_color()), text=task.get_importance_short(), font=("Times New Roman", 40, "bold"), fg=task.get_importance_font())
+        importance_indicator = tk.Label(self.canvas, bg=self.rgb_to_hex(task.get_importance_color()), text=task.get_importance_short(), font=("Times New Roman", 60, "bold"), fg=task.get_importance_font())
         importance_indicator.place(relx=0.7, rely=y_multiplier2, anchor="center")
         
         self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button, status_indicator, importance_indicator]})
@@ -188,17 +188,17 @@ class Listbox(tk.Frame):
         self.screenshot_label.image = self.screenshot_photo
         self.screenshot_label.pack()
 
-        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 50, "bold"), relief="flat")
+        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
         self.back_button.configure(command=self.back_from_filter)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
         self.filter_large = tk.Label(self.root, image=self.filter_large_icon, bd=0, bg=self.bg_color)
         self.filter_large.place(relx=0.125, rely=0.5, anchor="center")
 
-        self.filter_name = tk.Button(self.root, text="Filter by Name", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
-        self.filter_dead = tk.Button(self.root, text="Filter by Deadline", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
-        self.filter_status = tk.Button(self.root, text="Filter by Status", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
-        self.filter_importance = tk.Button(self.root, text="Filter by Importance", bg="white", fg="black", font=("Times New Roman", 33, "bold"))
+        self.filter_name = tk.Button(self.root, text="Filter by Name", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_dead = tk.Button(self.root, text="Filter by Deadline", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_status = tk.Button(self.root, text="Filter by Status", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_importance = tk.Button(self.root, text="Filter by Importance", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
         self.filter_name.configure(command=self.name_sort)
         self.filter_dead.configure(command=self.dead_sort)
         self.filter_status.configure(command=self.status_sort)
@@ -268,23 +268,23 @@ class Listbox(tk.Frame):
         self.screenshot_label.image = self.screenshot_photo
         self.screenshot_label.pack()
 
-        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 50, "bold"), relief="flat")
+        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
         self.back_button.configure(command=self.back_from_edit)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
-        self.old_name = tk.Label(self.root, text=name[:17], bg="black", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_name = tk.Label(self.root, text=name[:17], bg="black", fg="white", font=("Times New Roman", 60, "bold"))
         self.old_name.place(relx=0.25, rely=1/6, anchor="w")
-        self.old_desc = tk.Label(self.root, text=taskutil.find_task(name).description, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_desc = tk.Label(self.root, text=taskutil.find_task(name).description, bg="black", fg="white", font=("Times New Roman", 60, "bold"))
         self.old_desc.place(relx=0.25, rely=2/6, anchor="w")
-        self.old_dead = tk.Label(self.root, text=((taskutil.find_task(name).deadline + "*") if (taskutil.find_task(name).deadline == "00/00/0000") else (taskutil.find_task(name).deadline)), bg="black", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_dead = tk.Label(self.root, text=((taskutil.find_task(name).deadline + "*") if (taskutil.find_task(name).deadline == "00/00/0000") else (taskutil.find_task(name).deadline)), bg="black", fg="white", font=("Times New Roman", 60, "bold"))
         self.old_dead.place(relx=0.25, rely=3/6, anchor="w")
-        self.old_status = tk.Label(self.root, text=taskutil.find_task(name).status, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_status = tk.Label(self.root, text=taskutil.find_task(name).status, bg="black", fg="white", font=("Times New Roman", 60, "bold"))
         self.old_status.place(relx=0.25, rely=4/6, anchor="w")
-        self.old_importance = tk.Label(self.root, text=taskutil.find_task(name).importance, bg="black", fg="white", font=("Times New Roman", 40, "bold"))
+        self.old_importance = tk.Label(self.root, text=taskutil.find_task(name).importance, bg="black", fg="white", font=("Times New Roman", 60, "bold"))
         self.old_importance.place(relx=0.25, rely=5/6, anchor="w")
-        self.name_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.name_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 60, "bold"), width=10)
         self.name_entry.place(relx=0.95, rely=1/6, anchor="e")
-        self.desc_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 40, "bold"), width=10)
+        self.desc_entry = tk.Entry(self.root, bg="black", fg="white", font=("Times New Roman", 60, "bold"), width=10)
         self.desc_entry.place(relx=0.95, rely=2/6, anchor="e")
         self.status_entry = tk.OptionMenu(self.root, self.status_var, "Not Started", "Delayed", "Underway", "Almost Completed", "Finished")
         self.status_entry.place(relx=0.95, rely=4/6, anchor="e")
@@ -301,7 +301,7 @@ class Listbox(tk.Frame):
         self.edit_large = tk.Button(self.root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
         self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, se, ie))
         self.edit_large.place(relx=0.125, rely=0.4, anchor="center")
-        self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 35, "bold"), bg="white", fg="black")
+        self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 52, "bold"), bg="white", fg="black")
         self.edit_label.place(relx=0.125, rely=0.575, anchor="center")
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
