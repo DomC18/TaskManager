@@ -45,6 +45,10 @@ def init() -> None:
     login_button = tk.Button(root, text="Login/Register", font=("Arial", 25), bg="#4CAF50", fg="white", width=15, justify="center", command=lambda r=root, f=firstname_entry, u=username_entry, p=password_entry, fl=firstname_label, ul=username_label, pl=password_label, func=init_task_interface : verify_existing(r,f,u,p,fl,ul,pl,func))
     login_button.grid(row=4, column=0, columnspan=2, pady=20)
 
+    def exit(event:tk.Event) -> None:
+        root.destroy()
+
+    root.bind("<Escape>", exit)
     root.mainloop()
 
 
@@ -120,4 +124,8 @@ def init_task_interface() -> None:
 
     globalvar.cal = calendar
 
+    def exit(event:tk.Event) -> None:
+        root.destroy()
+
+    root.bind("<Escape>", exit)
     root.mainloop()
