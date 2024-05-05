@@ -54,6 +54,16 @@ def find_task(task_name:str) -> Task:
             return task
     return None
 
+def find_tasks_with_deadline(deadline:str) -> str:
+    tasks = []
+    for task in globalvar.user_tasks:
+        if task.deadline == deadline:
+            tasks.append(f"{task.name.casefold().capitalize()}, {task.status}, {task.importance}\n")
+    label_text = ""
+    for task in tasks:
+        label_text += task
+    return label_text
+
 def load_tasks() -> None:
     data:dict = {}
     file_dir = rf"{constants.USERDATADIR+globalvar.name}.json"
