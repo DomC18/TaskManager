@@ -25,7 +25,7 @@ class Calendar():
 
     def __init__(self, root:tk.Tk=None, width=0, height=0, bg="white", **kwargs) -> None:
         self.base_frame = tk.Frame(root, width=width, height=height, bg=bg, **kwargs)
-        self.height_offset = 715
+        self.height_offset = 700
         self.root = root
         self.bg = bg
 
@@ -44,16 +44,15 @@ class Calendar():
             self.curr_week_tasks[i].set(taskutil.find_tasks_with_deadline(self.week_values[i]))
         self.curr_month = self.month_keycodes[str(self.curr_day.month)]
         self.month_values = self.get_this_month_dates()
-        print(self.month_values)
         self.curr_month_tasks = [tk.Variable() for _ in range(35)]
         for i in range(35):
             self.curr_month_tasks[i].set(taskutil.find_tasks_with_deadline(self.month_values[i]))
 
-        self.cal_frame = tk.Frame(self.base_frame, width=width, height=self.height_offset, bg=bg)
-        self.day_frame = tk.Frame(self.cal_frame, width=width, height=self.height_offset, bg=bg)
+        self.cal_frame = tk.Frame(self.base_frame, width=width-2, height=self.height_offset, bg=bg)
+        self.day_frame = tk.Frame(self.cal_frame, width=width-2, height=self.height_offset, bg=bg, relief="groove", borderwidth=5)
         self.day_label = tk.Label(self.day_frame, bg=bg, font=("Times New Roman", 30, "bold"), justify="left", fg="black", textvariable=self.curr_day_tasks)
-        self.week_frames = [tk.Frame(self.cal_frame, width=int(width/7), height=self.height_offset, bg=bg) for _ in range(7)]
-        self.month_frames = [tk.Frame(self.cal_frame, width=int(width/7), height=int(self.height_offset/5), bg=bg) for _ in range(35)]
+        self.week_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=self.height_offset, bg=bg, relief="groove", borderwidth=5) for _ in range(7)]
+        self.month_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=int(self.height_offset/5), bg=bg, relief="groove", borderwidth=5) for _ in range(35)]
 
         self.next_button = tk.Button(self.base_frame, bd=0, bg="white", text="→", fg="black", font=("Times New Roman", 40, "bold"))
         self.next_button.configure(command=self.next)
@@ -223,7 +222,7 @@ class Calendar():
         self.day_label.place_forget()
         for i in range(7):
             self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
-            label = tk.Label(self.week_frames[i], bg=self.bg, font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_week_tasks[i])
+            label = tk.Label(self.week_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_week_tasks[i])
             label.place(relx=0.5, rely=0.5, anchor="center")
 
     def show_month(self) -> None:
