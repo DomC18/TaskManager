@@ -34,17 +34,17 @@ class Calendar():
         self.show_button.configure(command=lambda a=globalvar.add_button, al=globalvar.add_label, u=globalvar.up_button, d=globalvar.down_button : self.toggle_show(a,al,u,d))
 
         self.curr_day = self.get_this_date()
-        self.curr_day_tasks = tk.Variable()
+        self.curr_day_tasks = tk.StringVar()
         self.curr_day_formatted = self.date_list_to_string(self.curr_day)
         self.curr_day_tasks.set(taskutil.find_tasks_with_deadline(self.curr_day_formatted))
         self.curr_week = self.get_this_week()
         self.week_values = self.get_this_week_dates()
-        self.curr_week_tasks = [tk.Variable() for _ in range(7)]
+        self.curr_week_tasks = [tk.StringVar() for _ in range(7)]
         for i in range(7):
             self.curr_week_tasks[i].set(taskutil.find_tasks_with_deadline(self.week_values[i]))
         self.curr_month = self.month_keycodes[str(self.curr_day.month)]
         self.month_values = self.get_this_month_dates()
-        self.curr_month_tasks = [tk.Variable() for _ in range(35)]
+        self.curr_month_tasks = [tk.StringVar() for _ in range(35)]
         for i in range(35):
             self.curr_month_tasks[i].set(taskutil.find_tasks_with_deadline(self.month_values[i]))
 
@@ -52,14 +52,20 @@ class Calendar():
         self.day_frame = tk.Frame(self.cal_frame, width=width-2, height=self.height_offset, bg=bg, relief="groove", borderwidth=5)
         self.day_label = tk.Label(self.day_frame, bg=bg, font=("Times New Roman", 30, "bold"), justify="left", fg="black", textvariable=self.curr_day_tasks)
         self.week_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=self.height_offset, bg=bg, relief="groove", borderwidth=5) for _ in range(7)]
+        self.week_labels = [tk.Label(self.week_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_week_tasks[i]) for i in range(7)]
         self.month_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=int(self.height_offset/5), bg=bg, relief="groove", borderwidth=5) for _ in range(35)]
+        self.month_labels = [tk.Label(self.month_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_month_tasks[i]) for i in range(35)]
+        
+        self.day_active = False
+        self.week_active = False
+        self.month_active = False
 
         self.next_button = tk.Button(self.base_frame, bd=0, bg="white", text="→", fg="black", font=("Times New Roman", 40, "bold"))
         self.next_button.configure(command=self.next)
         self.prev_button = tk.Button(self.base_frame, bd=0, bg="white", text="←", fg="black", font=("Times New Roman", 40, "bold"))
         self.prev_button.configure(command=self.prev)
         self.group_display = tk.StringVar()
-        self.group_display.set(self.curr_month + str(self.curr_day.year))
+        self.group_display.set(self.curr_month + " " + str(self.curr_day.year))
         self.group_select = tk.StringVar()
         self.group_select.set("Month")
         self.group_label = tk.Label(self.base_frame, bg="red", fg="black", font=("Times New Roman", 55, "bold"), textvariable=self.group_display)
@@ -151,7 +157,7 @@ class Calendar():
             for i in range(7):
                 self.curr_week_tasks[i].set(taskutil.find_tasks_with_deadline(self.week_values[i]))
             self.show_week()
-            self.root.after(200, self.update_group_label)
+            self.root.after(333, self.update_group_label)
         elif self.group_select.get() == "Month":
             self.group_display.set(self.month_keycodes[str(self.curr_day.month)] + " " + str(self.curr_day.year))
             self.curr_month = self.get_this_month_raw(self.curr_day)
@@ -159,7 +165,7 @@ class Calendar():
             for i in range(35):
                 self.curr_month_tasks[i].set(taskutil.find_tasks_with_deadline(self.month_values[i]))
             self.show_month()
-            self.root.after(2000, self.update_group_label)
+            self.root.after(1000, self.update_group_label)
 
     def next(self) -> None:
         if self.group_select.get() == "Day":
@@ -208,32 +214,46 @@ class Calendar():
                 self.curr_day = datetime(day=self.curr_day.day, month=12, year=self.curr_day.year - 1)
         
     def show_day(self) -> None:
-        for i in range(35):
-            self.month_frames[i].place_forget()
-        for i in range(7):
-            self.week_frames[i].place_forget()
-        self.day_frame.place(relx=0.5, rely=0.5, anchor="center")
-        self.day_label.place(relx=0.5, rely=0, anchor="n")
+        if not self.day_active:
+            for i in range(35):
+                self.month_frames[i].place_forget()
+                self.month_labels[i].place_forget()
+            for i in range(7):
+                self.week_frames[i].place_forget()
+                self.week_labels[i].place_forget()
+            self.day_frame.place(relx=0.5, rely=0.5, anchor="center")
+            self.day_label.place(relx=0.5, rely=0, anchor="n")
+            self.day_active = True
+        self.week_active = False
+        self.month_active = False
 
     def show_week(self) -> None:
-        for i in range(35):
-            self.month_frames[i].place_forget()
-        self.day_frame.place_forget()
-        self.day_label.place_forget()
-        for i in range(7):
-            self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
-            label = tk.Label(self.week_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_week_tasks[i])
-            label.place(relx=0.5, rely=0.5, anchor="center")
+        if not self.week_active:
+            for i in range(35):
+                self.month_frames[i].place_forget()
+                self.month_labels[i].place_forget()
+            self.day_frame.place_forget()
+            self.day_label.place_forget()
+            for i in range(7):
+                self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
+                self.week_labels[i].place(relx=0.5, rely=0.5, anchor="center")
+            self.week_active = True
+        self.day_active = False
+        self.month_active = False
 
     def show_month(self) -> None:
-        self.day_frame.place_forget()
-        self.day_label.place_forget()
-        for i in range(7):
-            self.week_frames[i].place_forget()
-        for i in range(35):
-            self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
-            label = tk.Label(self.month_frames[i], bg=self.bg, font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_month_tasks[i])
-            label.place(relx=0.5, rely=0.5, anchor="center")
+        if not self.month_active:
+            self.day_frame.place_forget()
+            self.day_label.place_forget()
+            for i in range(7):
+                self.week_frames[i].place_forget()
+                self.week_labels[i].place_forget()
+            for i in range(35):
+                self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
+                self.month_labels[i].place(relx=0.5, rely=0.5, anchor="center")
+            self.month_active = True
+        self.day_active = False
+        self.week_active = False
 
     def toggle_show(self, add_button:tk.Button, add_label:tk.Label, up_button:tk.Button, down_button:tk.Button) -> None:
         if self.show_ctr % 2 == 0:
@@ -252,9 +272,7 @@ class Calendar():
             self.cal_frame.place(relx=0.5, rely=1, anchor="s")
             for i in range(35):
                 self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
-                label = tk.Label(self.month_frames[i], bg=self.bg, font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_month_tasks[i])
-                label.place(relx=0.5, rely=0.5, anchor="center")
-            
+                self.month_labels[i].place(relx=0.5, rely=0.5, anchor="center")
             self.root.after(200, self.update_group_label)
         else:
             self.curr_day = self.get_this_date()

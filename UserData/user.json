@@ -5,25 +5,11 @@
     },
     "tasks": [
         {
-            "name": "theology final",
+            "name": "task1",
             "description": "description",
-            "deadline": "05/14/2024",
-            "status": "Delayed",
-            "importance": "Critical"
-        },
-        {
-            "name": "english final",
-            "description": "description",
-            "deadline": "05/10/2024",
-            "status": "Underway",
-            "importance": "Critical"
-        },
-        {
-            "name": "calendar option",
-            "description": "description",
-            "deadline": "05/18/2024",
-            "status": "Underway",
-            "importance": "Trivial"
+            "deadline": "05/30/2024",
+            "status": "Not Started",
+            "importance": "Minimal"
         }
     ]
 }

@@ -3,5 +3,13 @@
         "username": "DomC18",
         "password": "fortnite"
     },
-    "tasks": []
+    "tasks": [
+        {
+            "name": "calendar option",
+            "description": "description",
+            "deadline": "05/31/2024",
+            "status": "Underway",
+            "importance": "Trivial"
+        }
+    ]
 }
