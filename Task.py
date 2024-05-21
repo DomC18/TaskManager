@@ -1,9 +1,6 @@
 import time
 
 class Task:
-    date_added:str
-    time_added:str
-
     name:str
     description:str
     deadline:str

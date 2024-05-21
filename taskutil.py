@@ -57,8 +57,8 @@ def find_task(task_name:str) -> Task:
 def find_tasks_with_deadline(deadline:str) -> str:
     tasks = []
     for task in globalvar.user_tasks:
-        if task.deadline == deadline:
-            tasks.append(f"{task.name.casefold().capitalize()}, {task.status}, {task.importance}\n")
+        if task.deadline == deadline or task.deadline == str(deadline[0:-2] + "20" + deadline[-2:]):
+            tasks.append(f" {task.name.casefold().capitalize()},\n {task.status},\n {task.importance}\n\n")
     label_text = ""
     for task in tasks:
         label_text += task

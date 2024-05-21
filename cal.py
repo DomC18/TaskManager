@@ -52,9 +52,9 @@ class Calendar():
         self.day_frame = tk.Frame(self.cal_frame, width=width-2, height=self.height_offset, bg=bg, relief="groove", borderwidth=5)
         self.day_label = tk.Label(self.day_frame, bg=bg, font=("Times New Roman", 30, "bold"), justify="left", fg="black", textvariable=self.curr_day_tasks)
         self.week_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=self.height_offset, bg=bg, relief="groove", borderwidth=5) for _ in range(7)]
-        self.week_labels = [tk.Label(self.week_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_week_tasks[i]) for i in range(7)]
+        self.week_labels = [tk.Label(master=self.week_frames[i], bg="blue", font=("Times New Roman", 20, "bold"), justify="left", fg="black") for i in range(7)]
         self.month_frames = [tk.Frame(self.cal_frame, width=int(width-2/7), height=int(self.height_offset/5), bg=bg, relief="groove", borderwidth=5) for _ in range(35)]
-        self.month_labels = [tk.Label(self.month_frames[i], bg="blue", font=("Times New Roman", 46, "bold"), justify="left", fg="black", textvariable=self.curr_month_tasks[i]) for i in range(35)]
+        self.month_labels = [tk.Label(master=self.month_frames[i], bg="blue", font=("Times New Roman", 10, "bold"), justify="left", fg="black", text=self.curr_month_tasks[i].get()) for i in range(35)]
         
         self.day_active = False
         self.week_active = False
@@ -217,10 +217,8 @@ class Calendar():
         if not self.day_active:
             for i in range(35):
                 self.month_frames[i].place_forget()
-                self.month_labels[i].place_forget()
             for i in range(7):
                 self.week_frames[i].place_forget()
-                self.week_labels[i].place_forget()
             self.day_frame.place(relx=0.5, rely=0.5, anchor="center")
             self.day_label.place(relx=0.5, rely=0, anchor="n")
             self.day_active = True
@@ -231,27 +229,25 @@ class Calendar():
         if not self.week_active:
             for i in range(35):
                 self.month_frames[i].place_forget()
-                self.month_labels[i].place_forget()
             self.day_frame.place_forget()
-            self.day_label.place_forget()
-            for i in range(7):
-                self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
-                self.week_labels[i].place(relx=0.5, rely=0.5, anchor="center")
-            self.week_active = True
+        for i in range(7):
+            self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
+            self.week_labels[i].configure(text=self.curr_week_tasks[i].get())
+            self.week_labels[i].grid(row=0, column=0)
+        self.week_active = True
         self.day_active = False
         self.month_active = False
 
     def show_month(self) -> None:
         if not self.month_active:
             self.day_frame.place_forget()
-            self.day_label.place_forget()
             for i in range(7):
                 self.week_frames[i].place_forget()
-                self.week_labels[i].place_forget()
-            for i in range(35):
-                self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
-                self.month_labels[i].place(relx=0.5, rely=0.5, anchor="center")
-            self.month_active = True
+        for i in range(35):
+            self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
+            self.month_labels[i].configure(text=self.curr_month_tasks[i].get())
+            self.month_labels[i].grid(row=0, column=0)
+        self.month_active = True
         self.day_active = False
         self.week_active = False
 
