@@ -1,15 +1,7 @@
 {
     "dom": {
-        "username": "DomC18",
-        "password": "fortnite"
+        "username": "dom",
+        "password": "dom"
     },
-    "tasks": [
-        {
-            "name": "calendar option",
-            "description": "description",
-            "deadline": "05/31/2024",
-            "status": "Underway",
-            "importance": "Trivial"
-        }
-    ]
+    "tasks": []
 }

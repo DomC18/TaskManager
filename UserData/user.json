@@ -10,6 +10,13 @@
             "deadline": "05/30/2024",
             "status": "Not Started",
             "importance": "Minimal"
+        },
+        {
+            "name": "task2",
+            "description": "description",
+            "deadline": "05/30/2024",
+            "status": "Not Started",
+            "importance": "Minimal"
         }
     ]
 }
