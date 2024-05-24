@@ -6,16 +6,6 @@ import time
 import json
 import os
 
-def should_back(task_name:str, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar) -> bool:
-    task_index = globalvar.user_tasks.index(find_task(task_name))
-    if month.get() == "" and (globalvar.user_tasks[task_index].deadline[0:2] == globalvar.curr_date[0:2]):
-        return False
-    if day.get() == "" and (globalvar.user_tasks[task_index].deadline[3:5] == globalvar.curr_date[3:5]):
-        return False
-    if year.get() == "" and (globalvar.user_tasks[task_index].deadline[6:10] == globalvar.curr_date[-4:]):
-        return False
-    return True
-
 def edit_task(task_name:str, name_entry:tk.Entry, description_entry:tk.Entry, month:tk.StringVar, day:tk.StringVar, year:tk.StringVar, status:tk.StringVar, importance:tk.StringVar) -> bool:
     new_date = ""
     task_index = globalvar.user_tasks.index(find_task(task_name))
