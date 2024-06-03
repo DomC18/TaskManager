@@ -11,6 +11,7 @@ class Listbox(tk.Frame):
         self.canvas = tk.Canvas(self, width=width, height=height, bg=bg)
         self.list_frame = tk.Frame(self.canvas)
         self.bg_color = self.rgb_to_hex((240, 240, 240))
+        self.bg = bg
         self.root = root
 
         self.canvas.pack(side="left", fill="both", expand=True)
@@ -81,16 +82,16 @@ class Listbox(tk.Frame):
         y_multiplier = 0.015 + (idx*0.13)
         y_multiplier2 = 0.0785 + (idx*0.13)
         
-        name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 49))
+        name_label = tk.Label(self.canvas, text=task.name[:13], font=('Helvetica', 49), bg=self.bg)
         name_label.place(relx=0.01, rely=y_multiplier, anchor="nw")
         
-        edit_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
+        edit_button = tk.Button(self.canvas, bd=0, bg="light blue")
         self.button_images.update({edit_button:self.edit_icon})
         edit_button.configure(command=lambda n=task.name : self.edit_task_interface(n))
         edit_button.configure(image=self.button_images[edit_button])
         edit_button.place(relx=0.875, rely=y_multiplier, anchor="ne")
         
-        delete_button = tk.Button(self.canvas, bd=0, bg=self.bg_color)
+        delete_button = tk.Button(self.canvas, bd=0, bg="light blue")
         self.button_images.update({delete_button:self.delete_icon})
         delete_button.configure(command=lambda b=delete_button : self.delete(b))
         delete_button.configure(image=self.button_images[delete_button])
@@ -188,17 +189,17 @@ class Listbox(tk.Frame):
         self.screenshot_label.image = self.screenshot_photo
         self.screenshot_label.pack()
 
-        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
+        self.back_button = tk.Button(self.root, bg="light blue", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
         self.back_button.configure(command=self.back_from_filter)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
-        self.filter_large = tk.Label(self.root, image=self.filter_large_icon, bd=0, bg=self.bg_color)
+        self.filter_large = tk.Label(self.root, image=self.filter_large_icon, bd=0, bg="light blue")
         self.filter_large.place(relx=0.125, rely=0.5, anchor="center")
 
-        self.filter_name = tk.Button(self.root, text="Filter by Name", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
-        self.filter_dead = tk.Button(self.root, text="Filter by Deadline", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
-        self.filter_status = tk.Button(self.root, text="Filter by Status", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
-        self.filter_importance = tk.Button(self.root, text="Filter by Importance", bg="white", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_name = tk.Button(self.root, text="Filter by Name", bg="light blue", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_dead = tk.Button(self.root, text="Filter by Deadline", bg="light blue", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_status = tk.Button(self.root, text="Filter by Status", bg="light blue", fg="black", font=("Times New Roman", 50, "bold"))
+        self.filter_importance = tk.Button(self.root, text="Filter by Importance", bg="light blue", fg="black", font=("Times New Roman", 50, "bold"))
         self.filter_name.configure(command=self.name_sort)
         self.filter_dead.configure(command=self.dead_sort)
         self.filter_status.configure(command=self.status_sort)
@@ -268,7 +269,7 @@ class Listbox(tk.Frame):
         self.screenshot_label.image = self.screenshot_photo
         self.screenshot_label.pack()
 
-        self.back_button = tk.Button(self.root, bg="white", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
+        self.back_button = tk.Button(self.root, bg="light blue", fg="black", text="←", font=("Helvetica", 75, "bold"), relief="flat")
         self.back_button.configure(command=self.back_from_edit)
         self.back_button.place(relx=-0.005, rely=-0.055, anchor="nw")
 
@@ -298,10 +299,10 @@ class Listbox(tk.Frame):
         self.day_entry = tk.OptionMenu(self.root, self.day_var, "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31")
         self.day_entry.place(relx=((0.9425+0.675)/2), rely=3/6, anchor="center")
 
-        self.edit_large = tk.Button(self.root, image=self.edit_large_icon, bd=0, bg=self.bg_color)
+        self.edit_large = tk.Button(self.root, image=self.edit_large_icon, bd=0, bg="light blue")
         self.edit_large.configure(command=lambda n=self.curr_task_name, ne=self.name_entry, dese=self.desc_entry, se=self.status_var, ie=self.importance_var: self.edit_task(n, ne, dese, se, ie))
         self.edit_large.place(relx=0.125, rely=0.4, anchor="center")
-        self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 52, "bold"), bg="white", fg="black")
+        self.edit_label = tk.Label(self.root, text="Edit Task", justify="center", font=("Times New Roman", 52, "bold"), bg="light blue", fg="black")
         self.edit_label.place(relx=0.125, rely=0.575, anchor="center")
     
     def edit_task(self, name:str, name_entry:tk.Entry, desc_entry:tk.Entry, status_entry:tk.Entry, importance_entry:tk.Entry) -> None:
