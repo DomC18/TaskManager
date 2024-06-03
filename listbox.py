@@ -105,73 +105,50 @@ class Listbox(tk.Frame):
         self.task_combos.update({task.name:[task.name, name_label, edit_button, delete_button, status_indicator, importance_indicator]})
     
     def move_down(self) -> None:
-        if self.list_index+8 > len(globalvar.user_tasks):
+        if self.list_index+8 > len(globalvar.filtered_tasks):
             return
 
         self.list_index += 1
-        task_names = self.task_combos.keys()
-
-        for task_name in task_names:
-            self.task_combos[task_name][1].destroy()
-            self.task_combos[task_name][2].destroy()
-            self.task_combos[task_name][3].destroy()
-            self.task_combos[task_name][4].destroy()
-            self.task_combos[task_name][5].destroy()
-        self.place_forget()
-        for idx, task in enumerate(globalvar.user_tasks):
-            if idx < self.list_index:
-                continue
-            if idx > self.list_index + 6:
-                break
-            self.insert(idx-self.list_index, task)
-        self.pack()
+        self.filter_insert()
 
     def move_up(self) -> None:
         if self.list_index <= 0:
             return
         
         self.list_index -= 1
-        task_names = self.task_combos.keys()
-
-        for task_name in task_names:
-            self.task_combos[task_name][1].destroy()
-            self.task_combos[task_name][2].destroy()
-            self.task_combos[task_name][3].destroy()
-            self.task_combos[task_name][4].destroy()
-            self.task_combos[task_name][5].destroy()
-        self.place_forget()
-        for idx, task in enumerate(globalvar.user_tasks):
-            if idx < self.list_index:
-                continue
-            if idx > self.list_index + 6:
-                break
-            self.insert(idx-self.list_index, task)
-        self.pack()
+        self.filter_insert()
 
     def add_task(self) -> None:
         if taskutil.amount_task("newtask") == 1:
             return
             
         globalvar.user_tasks.insert(0, Task())
-
+        globalvar.filtered_tasks = globalvar.user_tasks
         self.list_index = 0
+        self.filter_insert()
+        taskutil.save_tasks()
+
+    def del_row_elements(self):
         task_names = self.task_combos.keys()
+
         for task_name in task_names:
             self.task_combos[task_name][1].destroy()
             self.task_combos[task_name][2].destroy()
             self.task_combos[task_name][3].destroy()
             self.task_combos[task_name][4].destroy()
             self.task_combos[task_name][5].destroy()
+
+    def filter_insert(self) -> None:
+        self.del_row_elements()
         self.place_forget()
-        for idx, task in enumerate(globalvar.user_tasks):
+
+        for idx, task in enumerate(globalvar.filtered_tasks):
             if idx < self.list_index:
                 continue
             if idx > self.list_index + 6:
                 break
             self.insert(idx-self.list_index, task)
         self.pack()
-
-        taskutil.save_tasks()
 
     def filter_interface(self) -> None:
         self.x = self.root.winfo_rootx()
@@ -352,28 +329,13 @@ class Listbox(tk.Frame):
         self.importance_var.set("")
 
     def delete(self, delete_button:tk.Button) -> None:
-        task_names = self.task_combos.keys()
         task_combos = self.task_combos.values()
         
         for combo in task_combos:
             if combo[3] == delete_button:
                 name = combo[0]
         
-        for task_name in task_names:
-            self.task_combos[task_name][1].destroy()
-            self.task_combos[task_name][2].destroy()
-            self.task_combos[task_name][3].destroy()
-            self.task_combos[task_name][4].destroy()
-            self.task_combos[task_name][5].destroy()
-                
         self.task_combos.pop(self.task_combos[name][0])
         globalvar.user_tasks.pop(globalvar.user_tasks.index(taskutil.find_task(name)))
-        
-        self.place_forget()
-        for idx, task in enumerate(globalvar.user_tasks):
-            if idx < self.list_index:
-                continue
-            if idx > self.list_index + 6:
-                break
-            self.insert(idx-self.list_index, task)
-        self.pack()
+        globalvar.filtered_tasks = globalvar.user_tasks
+        self.filter_insert()

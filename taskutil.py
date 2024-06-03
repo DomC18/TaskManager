@@ -54,6 +54,21 @@ def find_tasks_with_deadline(deadline:str) -> str:
         label_text += task
     return label_text
 
+def search_tasks(entry:tk.Entry, insert_func) -> None:
+    search = entry.get()
+    if search == "":
+        globalvar.filtered_tasks = globalvar.user_tasks
+        insert_func()
+        return
+    
+    results = []
+    for task in globalvar.filtered_tasks:
+        if search in task.name:
+            results.append(task)
+    
+    globalvar.filtered_tasks = results
+    insert_func()
+
 def load_tasks() -> None:
     data:dict = {}
     file_dir = rf"{constants.USERDATADIR+globalvar.name}.json"

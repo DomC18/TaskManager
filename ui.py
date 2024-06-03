@@ -63,6 +63,8 @@ def init_task_interface() -> None:
 
     util_frame = tk.Frame(root, bg="light blue")
     util_frame.place(relx=0, rely=0, anchor="nw")
+    search_frame = tk.Frame(root, bg="light blue")
+    search_frame.place(relx=0.5, rely=0.0875, anchor="center")
     profile_frame = tk.Frame(root, bg="light blue")
     profile_frame.place(relx=1, rely=0, anchor="ne")
     task_frame = tk.Frame(root)
@@ -70,13 +72,20 @@ def init_task_interface() -> None:
 
     task_list = Listbox(task_frame, root, 826, 676, "grey")
     task_list.list_index = 0
-    for idx, task in enumerate(globalvar.user_tasks):
+    globalvar.filtered_tasks = globalvar.user_tasks
+    for idx, task in enumerate(globalvar.filtered_tasks):
         if idx < task_list.list_index:
             continue
         if idx > task_list.list_index + 6:
             break
         task_list.insert(idx-task_list.list_index, task)
     task_list.pack()
+
+    search_entry = tk.Entry(search_frame, bd=0, bg="#ffabab", fg="black", font=("Times New Roman", 35, "bold"), width=20)
+    search_entry.grid(row=0, column=0, padx=10)
+    search_icon = tk.PhotoImage(file=constants.SEARCHFILE)
+    search_button = tk.Button(search_frame, image=search_icon, bd=0, bg="light blue", command=lambda e=search_entry, f=task_list.filter_insert : taskutil.search_tasks(e,f))
+    search_button.grid(row=0, column=1)
 
     save_icon = tk.PhotoImage(file=constants.SAVEFILE)
     save_button = tk.Button(util_frame, image=save_icon, bd=0, bg="light blue", command=taskutil.save_tasks)
