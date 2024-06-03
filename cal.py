@@ -5,7 +5,7 @@ import globalvar
 import taskutil
 import time
 
-class Calendar():
+class Calendar:
     show_ctr:int = 0
 
     month_keycodes = {
@@ -115,11 +115,10 @@ class Calendar():
 
         month_dates_formatted = []
 
-        current_date = start_of_month_range
-        while current_date <= end_of_month_range:
-            formatted_date = current_date.strftime("%m/%d/%y")
+        # Generate 35 dates, regardless of the number of days in the current month
+        for i in range(35):
+            formatted_date = (start_of_month_range + timedelta(days=i)).strftime("%m/%d/%y")
             month_dates_formatted.append(formatted_date)
-            current_date += timedelta(days=1)
 
         return month_dates_formatted
     
@@ -167,7 +166,9 @@ class Calendar():
             self.curr_month = self.get_this_month_raw(self.curr_day)
             self.month_values = self.get_this_month_dates(self.curr_day)
             for i in range(35):
-                self.curr_month_tasks[i].set(taskutil.find_tasks_with_deadline(self.month_values[i]))
+                self.curr_month_tasks[i].set(
+                    taskutil.find_tasks_with_deadline(self.month_values[i])
+                )
             self.show_month()
             self.root.after(1000, self.update_group_label)
 
@@ -236,9 +237,10 @@ class Calendar():
             self.day_frame.place_forget()
         for i in range(7):
             self.week_frames[i].place(relx=((1/7)*((i+7)%7)), rely=0.5, anchor="w")
-            self.week_labels[i].configure(text=self.curr_week_tasks[i].get())
-            if self.curr_week_tasks[i].get() != "":
-                self.week_labels[i].grid(row=0, column=0)
+            self.week_labels[i].configure(text=(((self.week_values[i])+"\n\n"+(self.curr_week_tasks[i].get())) 
+                                                if ((self.curr_week_tasks[i].get()) != "") 
+                                                else (self.week_values[i])))
+            self.week_labels[i].grid(row=0, column=0)
         self.week_active = True
         self.day_active = False
         self.month_active = False
@@ -250,9 +252,10 @@ class Calendar():
                 self.week_frames[i].place_forget()
         for i in range(35):
             self.month_frames[i].place(relx=((1/7)*((i+7)%7)), rely=(0.2*(int(i/7))), anchor="nw")
-            self.month_labels[i].configure(text=self.curr_month_tasks[i].get())
-            if self.curr_month_tasks[i].get() != "":
-                self.month_labels[i].grid(row=0, column=0)
+            self.month_labels[i].configure(text=(((self.month_values[i])+"\n"+(self.curr_month_tasks[i].get())) 
+                                                 if ((self.curr_month_tasks[i].get()) != "") 
+                                                 else (self.month_values[i])))
+            self.month_labels[i].grid(row=0, column=0)
         self.month_active = True
         self.day_active = False
         self.week_active = False
